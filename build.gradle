@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'org.narses'
+version 'DEVELOPMENTBUILD-ALPHA'
+
+repositories {
+    mavenCentral()
+
+    // Minestom repos
+    maven { url 'https://repo.spongepowered.org/maven' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    // Minestom (new block api)
+    implementation 'com.github.Minestom:Minestom:new-block-api-SNAPSHOT'
+}
