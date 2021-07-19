@@ -1,6 +1,7 @@
-package org.narses.narsion;
+package org.narses.narsion.dev;
 
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
@@ -13,10 +14,15 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.narses.narsion.dev.commands.ItemCommand;
+import org.narses.narsion.dev.items.DevelopmentItemData;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A development flavour of the NarsionServer used for testing purposes
+ */
 public class DevServer extends NarsionServer {
     // Entrypoint for dev server
     public static void main(String[] args) {
@@ -31,7 +37,7 @@ public class DevServer extends NarsionServer {
      * @param server
      */
     private DevServer(MinecraftServer server) {
-        super(server);
+        super(server, new DevelopmentItemData());
 
         // Start dev instance
         InstanceContainer instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
@@ -41,6 +47,13 @@ public class DevServer extends NarsionServer {
         MinecraftServer.getGlobalEventHandler()
                 .addListener(PlayerLoginEvent.class, event -> event.setSpawningInstance(instanceContainer))
                 .addListener(PlayerSpawnEvent.class, event -> event.getPlayer().teleport(SPAWN_POSITION));
+
+        // Register commands
+        {
+            CommandManager manager = MinecraftServer.getCommandManager();
+
+            manager.register(new ItemCommand(this));
+        }
 
         server.start("0.0.0.0", 25565);
     }
