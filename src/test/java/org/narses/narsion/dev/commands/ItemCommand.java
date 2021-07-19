@@ -6,11 +6,13 @@ import net.minestom.server.command.builder.CommandContext;
 import static net.minestom.server.command.builder.arguments.ArgumentType.*;
 
 import net.minestom.server.entity.Player;
+import net.minestom.server.item.Enchantment;
 import net.minestom.server.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.narses.narsion.dev.NarsionServer;
+import net.minestom.server.item.attribute.ItemAttribute;
+import org.narses.narsion.NarsionServer;
 
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class ItemCommand extends Command {
@@ -43,9 +45,15 @@ public class ItemCommand extends Command {
         String itemID = context.get("item_id");
 
         ItemStack item = server.getItemStackProvider()
-                .create(itemID, new UUID(0, 0), null);
+                .create(
+                        itemID,
+                        new UUID(0, 0),
+                        null
+                );
 
         // Add item to player
         sender.asPlayer().getInventory().addItemStack(item);
+
+        server.getLogger().info("Player " + sender.asPlayer().getUsername() + " was given item: " + item.getMeta().toSNBT());
     }
 }

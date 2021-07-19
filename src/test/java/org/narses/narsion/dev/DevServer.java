@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.dev.commands.ItemCommand;
 import org.narses.narsion.dev.items.DevelopmentItemData;
+import org.narses.narsion.NarsionServer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +59,7 @@ public class DevServer extends NarsionServer {
         server.start("0.0.0.0", 25565);
     }
 
-    private class DevelopmentChunkGenerator implements ChunkGenerator {
+    private static class DevelopmentChunkGenerator implements ChunkGenerator {
 
         @Override
         public void generateChunkData(@NotNull ChunkBatch batch, int chunkX, int chunkZ) {

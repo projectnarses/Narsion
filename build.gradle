@@ -19,7 +19,7 @@ dependencies {
     implementation 'com.github.Minestom:Minestom:new-block-api-SNAPSHOT'
 
     // Item library
-    implementation 'com.github.KrystilizeNevaDies:Itemize:5bee47161a'
+    implementation 'com.github.KrystilizeNevaDies:Itemize:e8fbd1a880'
 }
 
 jar {
