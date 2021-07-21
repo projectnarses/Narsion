@@ -1,6 +1,7 @@
-package org.narses.narsion.classes.abilities;
+package org.narses.narsion.classes;
 
 import org.narses.narsion.classes.Archetype;
+import org.narses.narsion.classes.abilities.Ability;
 
 /**
  * This represents a single player class instance

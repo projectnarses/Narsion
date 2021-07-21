@@ -4,7 +4,6 @@ import com.moandjiezana.toml.Toml;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.classes.abilities.Ability;
-import org.narses.narsion.classes.abilities.PlayerClass;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

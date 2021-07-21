@@ -1,10 +1,9 @@
 package org.narses.narsion.player;
 
-import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.classes.PlayerClasses;
-import org.narses.narsion.classes.abilities.PlayerClass;
+import org.narses.narsion.classes.PlayerClass;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,22 +28,26 @@ public class NarsionPlayer {
         return playerNarsionPlayerMap.get(player);
     }
 
-    private final NarsionServer server;
+    private final @NotNull NarsionServer server;
 
     // Player object
-    private final Player player;
+    private final @NotNull Player player;
 
     // Player data
-    private PlayerClass playerClass;
+    private @NotNull PlayerClass playerClass;
 
-    private NarsionPlayer(NarsionServer server, Player player) {
+    private NarsionPlayer(@NotNull NarsionServer server, @NotNull Player player) {
         this.player = player;
         this.server = server;
         this.playerClass = server.getPlayerClasses().DEVELOPMENT;
         // TODO: Read player data from database
     }
 
-    public void setPlayerClass(PlayerClass playerClass) {
+    public void setPlayerClass(@NotNull PlayerClass playerClass) {
         this.playerClass = playerClass;
+    }
+
+    public @NotNull PlayerClass getPlayerClass() {
+        return playerClass;
     }
 }
