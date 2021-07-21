@@ -20,6 +20,9 @@ dependencies {
 
     // Item library
     implementation 'com.github.KrystilizeNevaDies:Itemize:e8fbd1a880'
+
+    // Toml config library
+    implementation 'com.github.mwanji:toml4j:4d206e4af6'
 }
 
 jar {

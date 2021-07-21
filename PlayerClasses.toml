@@ -1,0 +1,104 @@
+#############
+## Classes ##
+#############
+# All numbers MUST have a decimal
+
+[ARCHER]
+    Archetype = "SKIRMISHER"
+    Health = 1.25
+    AttackDamage = 1.2
+    Armor = 1.5
+    MagicDamage = 0.25
+    MagicResistance = 0.75
+    TrueDamage = 1.5
+    MovementSpeed = 1.0
+
+[BARBARIAN]
+    Archetype = "FIGHTER"
+    Health = 0.75
+    AttackDamage = 2.0
+    Armor = 0.75
+    MagicDamage = 0.75
+    MagicResistance = 0.25
+    TrueDamage = 2.0
+    MovementSpeed = 2.0
+
+[CLERIC]
+    Archetype = "CASTER"
+    Health = 1.25
+    AttackDamage = 1.2
+    Armor = 1.5
+    MagicDamage = 0.25
+    MagicResistance = 0.75
+    TrueDamage = 1.5
+    MovementSpeed = 1.0
+
+[DEVELOPMENT]
+    Archetype = "DEVELOPMENT"
+    Health = 3.0
+    AttackDamage = 3.0
+    Armor = 3.0
+    MagicDamage = 3.0
+    MagicResistance = 3.0
+    TrueDamage = 3.0
+    MovementSpeed = 3.0
+
+[JUGGERNAUT]
+    Archetype = "FIGHTER"
+    Health = 3.0
+    AttackDamage = 0.25
+    Armor = 3.0
+    MagicDamage = 0.0
+    MagicResistance = 1.0
+    TrueDamage = 0.5
+    MovementSpeed = 0.75
+
+[MAGE]
+    Archetype = "CASTER"
+    Health = 1.25
+    AttackDamage = 1.2
+    Armor = 1.5
+    MagicDamage = 0.25
+    MagicResistance = 0.75
+    TrueDamage = 1.5
+    MovementSpeed = 1.0
+
+[OUTRIDER]
+    Archetype = "SKIRMISHER"
+    Health = 1.25
+    AttackDamage = 1.2
+    Armor = 1.5
+    MagicDamage = 0.25
+    MagicResistance = 0.75
+    TrueDamage = 1.5
+    MovementSpeed = 1.0
+
+[PALADIN]
+    Archetype = "FIGHTER"
+    Health = 1.5
+    AttackDamage = 0.75
+    Armor = 1.5
+    MagicDamage = 1.0
+    MagicResistance = 1.0
+    TrueDamage = 1.0
+    MovementSpeed = 1.0
+
+[RANGER]
+    Archetype = "SKIRMISHER"
+    Health = 1.25
+    AttackDamage = 1.2
+    Armor = 1.5
+    MagicDamage = 0.25
+    MagicResistance = 0.75
+    TrueDamage = 1.5
+    MovementSpeed = 1.0
+
+[WARRIOR]
+    Archetype = "FIGHTER"
+    Health = 1.25
+    AttackDamage = 1.2
+    Armor = 1.5
+    MagicDamage = 0.25
+    MagicResistance = 0.75
+    TrueDamage = 1.5
+    MovementSpeed = 1.0

@@ -1,5 +1,6 @@
 package org.narses.narsion.dev;
 
+import com.moandjiezana.toml.Toml;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
@@ -14,31 +15,40 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.narses.narsion.classes.PlayerClasses;
 import org.narses.narsion.dev.commands.ItemCommand;
 import org.narses.narsion.dev.items.DevelopmentItemData;
 import org.narses.narsion.NarsionServer;
+import org.narses.narsion.player.NarsionPlayer;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * A development flavour of the NarsionServer used for testing purposes
  */
-public class DevServer extends NarsionServer {
+public class DevServer extends NarsionServer<NarsionPlayer> {
     // Entrypoint for dev server
     public static void main(String[] args) {
         new DevServer(MinecraftServer.init());
     }
 
     private static final Pos SPAWN_POSITION = new Pos(0, 10, 0);
+    private static final File PLAYER_CLASSES_CONFIG = new File("PlayerClasses.toml");
 
     /**
      * Initializes a dev server
      *
-     * @param server
+     * @param server the server being initialized
      */
     private DevServer(MinecraftServer server) {
-        super(server, new DevelopmentItemData());
+        super(
+                server,
+                new DevelopmentItemData(),
+                NarsionPlayer::of,
+                new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG))
+        );
 
         // Start dev instance
         InstanceContainer instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
