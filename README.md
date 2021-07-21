@@ -1,2 +1,2 @@
 # Narsion
-The core logic for the narses project
+The core logic for the Narses project
