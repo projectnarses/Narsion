@@ -16,6 +16,7 @@ import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.classes.PlayerClasses;
+import org.narses.narsion.dev.commands.ClassCommand;
 import org.narses.narsion.dev.commands.ItemCommand;
 import org.narses.narsion.dev.items.DevelopmentItemData;
 import org.narses.narsion.NarsionServer;
@@ -28,7 +29,7 @@ import java.util.List;
 /**
  * A development flavour of the NarsionServer used for testing purposes
  */
-public class DevServer extends NarsionServer<NarsionPlayer> {
+public class DevServer extends NarsionServer {
     // Entrypoint for dev server
     public static void main(String[] args) {
         new DevServer(MinecraftServer.init());
@@ -64,6 +65,7 @@ public class DevServer extends NarsionServer<NarsionPlayer> {
             CommandManager manager = MinecraftServer.getCommandManager();
 
             manager.register(new ItemCommand(this));
+            manager.register(new ClassCommand(this));
         }
 
         server.start("0.0.0.0", 25565);

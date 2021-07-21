@@ -12,6 +12,7 @@ import org.narses.narsion.player.NarsionPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -19,18 +20,18 @@ import java.util.function.Function;
  *
  * This class is designed to be extended to provide a specific flavour of the narses game logic
  */
-public abstract class NarsionServer<P extends NarsionPlayer> {
+public abstract class NarsionServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(NarsionServer.class);
 
     private final @NotNull ItemStackProvider itemStackProvider;
     private final @NotNull ItemDataProvider itemDataProvider;
-    private final @NotNull Function<Player, P> playerWrapperFunction;
+    private final @NotNull BiFunction<NarsionServer, Player, Object> playerWrapperFunction;
     private final @NotNull PlayerClasses playerClasses;
 
     public NarsionServer(
             @NotNull MinecraftServer server,
             @NotNull NarsionItemDataProvider itemDataProvider,
-            @NotNull Function<Player, P> playerWrapperFunction,
+            @NotNull BiFunction<NarsionServer, Player, Object> playerWrapperFunction,
             @NotNull PlayerClasses playerClasses
     ) {
         // Item data + provider
@@ -56,7 +57,12 @@ public abstract class NarsionServer<P extends NarsionPlayer> {
         return LOGGER;
     }
 
-    public @NotNull P getPlayerWrapper(Player player) {
-        return playerWrapperFunction.apply(player);
+    @SuppressWarnings("unchecked")
+    public @NotNull <P> P getPlayerWrapper(Player player) {
+        return (P) playerWrapperFunction.apply(this, player);
     }
+
+    public PlayerClasses getPlayerClasses() {
+        return playerClasses;
+    };
 }

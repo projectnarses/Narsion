@@ -1,8 +1,13 @@
 package org.narses.narsion.classes;
 
 import com.moandjiezana.toml.Toml;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.classes.abilities.Ability;
 import org.narses.narsion.classes.abilities.PlayerClass;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.narses.narsion.util.TomlUtils.*;
 
@@ -26,7 +31,7 @@ public class PlayerClasses {
      * Has a bow/arrow, does damage at a range. The main "ranged" Class. Also has a
      * small dagger to pretend that they can fight in close combat.
      */
-    public final PlayerClass ARCHER;
+    public final @NotNull PlayerClass ARCHER;
 
     /*
      * Barbarian
@@ -34,7 +39,7 @@ public class PlayerClasses {
      * The most mobile Fighter Class, but also the least tanky. Primarily does
      * damage
      */
-    public final PlayerClass BARBARIAN;
+    public final @NotNull PlayerClass BARBARIAN;
 
     /*
      * Cleric
@@ -43,28 +48,28 @@ public class PlayerClasses {
      * as well as provide some healing. They're mostly intended as a deterrent
      * against archers taking over.
      */
-    public final PlayerClass CLERIC;
+    public final @NotNull PlayerClass CLERIC;
 
     /*
      * Development
      *
      * The Development class is a class used for bug testing
      */
-    public final PlayerClass DEVELOPMENT;
+    public final @NotNull PlayerClass DEVELOPMENT;
 
     /*
      * Juggernaut
      *
      * The tank. Does tank things. Has a shield, can cover teammates, etc.
      */
-    public final PlayerClass JUGGERNAUT;
+    public final @NotNull PlayerClass JUGGERNAUT;
 
     /*
      * Mage
      *
      * Mages do wide, area of effect spells to punish players who group up densely
      */
-    public final PlayerClass MAGE;
+    public final @NotNull PlayerClass MAGE;
 
     /*
      * Outrider
@@ -72,7 +77,7 @@ public class PlayerClasses {
      * Light Cavalry. Can be on Horseback; high mobility, but not the best at 1v1
      * combat. Great at flanking.
      */
-    public final PlayerClass OUTRIDER;
+    public final @NotNull PlayerClass OUTRIDER;
 
     /*
      * Paladin
@@ -80,7 +85,7 @@ public class PlayerClasses {
      * Buffing, support Class. Tanky-ish, doesn't do a ton of damage. Can mitigate
      * damage on teammates and provide light healing.
      */
-    public final PlayerClass PALADIN;
+    public final @NotNull PlayerClass PALADIN;
 
     /*
      * Ranger
@@ -89,7 +94,7 @@ public class PlayerClasses {
      * targets before going in for the kill, but will die if gap-closed on unless
      * target is damaged.
      */
-    public final PlayerClass RANGER;
+    public final @NotNull PlayerClass RANGER;
 
     /*
      * Warrior
@@ -97,7 +102,11 @@ public class PlayerClasses {
      * Generic, all around fighter. Balanced in giving damage and taking it.
      * Sword/board, very familiar to most Minecraft players.
      */
-    public final PlayerClass WARRIOR;
+    public final @NotNull PlayerClass WARRIOR;
+
+    // Cached collections for easy lookup
+    private final @NotNull PlayerClass[] values;
+    private final @NotNull Map<String, PlayerClass> classesByName = new ConcurrentHashMap<>();
 
     /**
      * Constructs all loaded player classes from the specified config
@@ -113,6 +122,24 @@ public class PlayerClasses {
         this.PALADIN = generateClass("PALADIN", config.getTable("PALADIN"));
         this.RANGER = generateClass("RANGER", config.getTable("RANGER"));
         this.WARRIOR = generateClass("WARRIOR", config.getTable("WARRIOR"));
+
+        this.values = new PlayerClass[] {
+                ARCHER,
+                BARBARIAN,
+                CLERIC,
+                DEVELOPMENT,
+                JUGGERNAUT,
+                MAGE,
+                OUTRIDER,
+                PALADIN,
+                RANGER,
+                WARRIOR
+        };
+
+        // Place into map
+        for (PlayerClass playerClass : values) {
+            classesByName.put(playerClass.className(), playerClass);
+        }
     }
 
     private PlayerClass generateClass(String className, Toml config) {
@@ -128,5 +155,13 @@ public class PlayerClasses {
                     KEY_MOVEMENT_SPEED.get(config),
                     KEY_TRUE_DAMAGE.get(config)
             );
+    }
+
+    public @Nullable PlayerClass getPlayerClass(@NotNull String name) {
+        return classesByName.get(name);
+    }
+
+    public @NotNull PlayerClass[] values() {
+        return values;
     }
 }
