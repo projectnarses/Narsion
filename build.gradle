@@ -18,6 +18,9 @@ dependencies {
     // Minestom (new block api)
     implementation 'com.github.Minestom:Minestom:new-block-api-SNAPSHOT'
 
+    // Entity library
+    implementation 'com.github.projectnarses:NarsionEntities:0f426215bb'
+
     // Item library
     implementation 'com.github.KrystilizeNevaDies:Itemize:e8fbd1a880'
 

@@ -1,8 +1,18 @@
 package org.narses.narsion.classes.abilities.warrior;
 
+import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.fakeplayer.FakePlayer;
+import net.minestom.server.entity.metadata.other.ArmorStandMeta;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.utils.time.TimeUnit;
+import org.narses.entities.collision.OffsetBoundingBox;
+import org.narses.entities.thrownitementity.ThrownItemEntity;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.player.NarsionPlayer;
+
+import java.util.Objects;
 
 public class WeaponTossAbility {
 	
@@ -10,24 +20,22 @@ public class WeaponTossAbility {
 	private static final int slowdownStrength = 3; // Strength of slow down
 	
 	public static void activate(NarsionServer server, Player player) {
-		/*
+		Pos entityPosition = player.getPosition().add(0f, -0.2f, 0f);
+		ItemStack entityItemStack = player.getInventory().getItemInMainHand();
 
-		Position entityPosition = player.getPosition().clone().add(0f, -0.2f, 0f);
-		ItemStack entityItemStack = player.getInventory().getItemStack(0);
 		// Create thrown entity
-		final ThrownItemEntity entity = new ThrownItemEntity(entityPosition, player.getInstance(), entityItemStack);
+		final ThrownItemEntity entity = new ThrownItemEntity(entityPosition, entityItemStack, 20);
+		entity.setInstance(Objects.requireNonNull(player.getInstance()));
 
 		// Set hit callbacks
 		entity.setHitBlock((instance, block) -> {
-
 			entity.setMoving(false);
-
 
 			ArmorStandMeta meta = (ArmorStandMeta) entity.getEntityMeta();
 
-			meta.setHeadRotation(new Vector((float) ((Math.random() * 45.0) - 22.5), 90, 180));
+			meta.setHeadRotation(new Vec(((Math.random() * 45.0) - 22.5), 90, 180));
 
-			entity.getPosition().add(0f, 1.8f, 0f);
+			entity.teleport(entity.getPosition().add(0f, 1.8f, 0f));
 
 			entity.setBoundingBox(new OffsetBoundingBox(entity, 0.1f, 0.1f, 0.1f, 0.0f, 0.7f, 0.0f));
 
@@ -35,30 +43,19 @@ public class WeaponTossAbility {
 		});
 
 		entity.setHitEntity(hitEntity -> {
-			final ItemStack item = entity.getHelmet();
+			if (hitEntity instanceof Player somePlayer)
+			if (player != somePlayer) {
+				entity.remove();
 
-			if (NarsesItemMeta.isValid(item.getMeta()) && (hitEntity instanceof NarsesPlayer)) {
-				final String itemID = NarsesItemMeta.from(item.getMeta()).getNarsesID();
-				final NarsesItem narsesItem = NarsesServer.getItemDatabase().getItem(itemID);
-				final NarsesPlayer somePlayer = ((NarsesPlayer) hitEntity);
-
-				// TODO: Update to new effect/attack system
-
-				// Attack player
-				// somePlayer.damage(narsesItem.getAttackDamage(), DamageType.PHYSICAL, player, AttackType.THROWN);
-
-				// Slow player down
-				// somePlayer.addEffect(NarsesEffects.SLOWED, slowdownStrength, slowdownTime);
+				// TODO: Attack player
+				somePlayer.sendMessage("You got hit");
 			}
-
-			entity.remove();
 		});
 
 		// Set entity instance
-		entity.setInstance(player.getInstance());
+		entity.setInstance(Objects.requireNonNull(player.getInstance()));
 
 		// Tell player of hereby thrown entity
-		player.sendMessage(Component.text("Tossed!"));
-		*/
+		player.sendMessage("Tossed!");
 	}
 }

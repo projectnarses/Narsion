@@ -74,6 +74,8 @@ public class ClassCommand extends Command {
         String className = context.get("class");
         PlayerClass playerClass = server.getPlayerClasses().getPlayerClass(className);
 
+        assert playerClass != null;
+
         narsionPlayer.setPlayerClass(playerClass);
     }
 

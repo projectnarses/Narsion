@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.classes.PlayerClasses;
 import org.narses.narsion.dev.commands.ClassCommand;
+import org.narses.narsion.dev.commands.GamemodeCommand;
 import org.narses.narsion.dev.commands.ItemCommand;
 import org.narses.narsion.dev.items.DevelopmentItemData;
 import org.narses.narsion.NarsionServer;
@@ -58,6 +59,7 @@ public class DevServer extends NarsionServer {
         // Proper spawning
         MinecraftServer.getGlobalEventHandler()
                 .addListener(PlayerLoginEvent.class, event -> event.setSpawningInstance(instanceContainer))
+                .addListener(PlayerLoginEvent.class, event -> event.getPlayer().setPermissionLevel(4))
                 .addListener(PlayerSpawnEvent.class, event -> event.getPlayer().teleport(SPAWN_POSITION));
 
         // Register commands
@@ -66,6 +68,7 @@ public class DevServer extends NarsionServer {
 
             manager.register(new ItemCommand(this));
             manager.register(new ClassCommand(this));
+            manager.register(new GamemodeCommand(this));
         }
 
         server.start("0.0.0.0", 25565);
@@ -78,6 +81,10 @@ public class DevServer extends NarsionServer {
             for (int x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
                 for (int z = 0; z < Chunk.CHUNK_SIZE_Z; z++) {
                     batch.setBlock(x, 0, z, Block.STONE);
+                    batch.setBlock(x, 1, z, Block.STONE);
+                    batch.setBlock(x, 2, z, Block.STONE);
+                    batch.setBlock(x, 3, z, Block.STONE);
+                    batch.setBlock(x, 4, z, Block.STONE);
                 }
             }
         }
