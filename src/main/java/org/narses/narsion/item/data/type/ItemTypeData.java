@@ -1,4 +1,4 @@
-package org.narses.narsion.item.type;
+package org.narses.narsion.item.data.type;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.item.ItemMetaBuilder;
@@ -31,14 +31,14 @@ public interface ItemTypeData {
             int tier,
             String[][] recipes
     ) implements ItemTypeData {
-        private static final ItemType ITEM_TYPE = new ItemType(Component.text(COMPONENT.class.getName()), new NBTCompound());
+        private static final ItemType ITEM_TYPE = new ItemType(Component.text("Component"), new NBTCompound());
 
         @Override
         public void apply(ItemMetaBuilder builder) {
             // Global
             builder.set(TAG_TIER, tier);
             builder.set(TAG_RECIPES, recipes);
-            builder.set(TAG_ITEM_TYPE, COMPONENT.class.getName());
+            builder.set(TAG_ITEM_TYPE, COMPONENT.class.getSimpleName());
 
             // Component
             builder.set(TAG_COMPONENT_TYPE, type);
@@ -68,14 +68,14 @@ public interface ItemTypeData {
             int tier,
             String[][] recipes
     ) implements ItemTypeData {
-        private static final ItemType ITEM_TYPE = new ItemType(Component.text(WEAPON.class.getName()), new NBTCompound());
+        private static final ItemType ITEM_TYPE = new ItemType(Component.text("Weapon"), new NBTCompound());
 
         @Override
         public void apply(ItemMetaBuilder builder) {
             // Global
             builder.set(TAG_TIER, tier);
             builder.set(TAG_RECIPES, recipes);
-            builder.set(TAG_ITEM_TYPE, WEAPON.class.getName());
+            builder.set(TAG_ITEM_TYPE, WEAPON.class.getSimpleName());
 
             // Weapon
             builder.set(TAG_ARCHETYPE, archetype);

@@ -3,7 +3,6 @@ package org.narses.narsion.item;
 import net.minestom.server.item.ItemStackBuilder;
 import org.itemize.ItemStackProvider;
 import org.itemize.data.ItemData;
-import org.itemize.data.ItemDataProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;

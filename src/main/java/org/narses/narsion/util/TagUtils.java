@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class TagUtils {
     public static <T extends Enum<T>> Tag<T> Enum(String key, Class<T> enumClass) {

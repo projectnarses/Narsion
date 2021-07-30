@@ -1,12 +1,7 @@
 package org.narses.narsion.classes.abilities.warrior;
 
-import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.instance.block.Block;
-import net.minestom.server.utils.Position;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.player.NarsionPlayer;
 
 public class LacerateAbility {
 	public static final Integer range = 5;

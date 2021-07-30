@@ -8,12 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.classes.PlayerClasses;
 import org.narses.narsion.item.NarsionItemDataProvider;
 import org.narses.narsion.item.NarsionItemStackProvider;
-import org.narses.narsion.player.NarsionPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * The entrypoint of the NarsionServer
@@ -58,7 +56,7 @@ public abstract class NarsionServer {
     }
 
     @SuppressWarnings("unchecked")
-    public @NotNull <P> P getPlayerWrapper(Player player) {
+    public @NotNull <P> P wrapPlayer(Player player) {
         return (P) playerWrapperFunction.apply(this, player);
     }
 

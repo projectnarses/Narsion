@@ -11,13 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jglrxavpok.hephaistos.nbt.NBTCompound;
 import org.narses.narsion.classes.Archetype;
 import org.narses.narsion.item.NarsionItemDataProvider;
-import org.narses.narsion.item.type.AttackType;
-import org.narses.narsion.item.type.ComponentType;
-import org.narses.narsion.item.type.DamageType;
-import org.narses.narsion.item.type.ItemTypeData;
+import org.narses.narsion.item.data.type.AttackType;
+import org.narses.narsion.item.data.type.ComponentType;
+import org.narses.narsion.item.data.type.DamageType;
+import org.narses.narsion.item.data.type.ItemTypeData;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -42,27 +41,19 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         builder.meta(DevelopmentItems.valueOf(ID));
     }
 
-    private enum DevelopmentItems implements Supplier<ItemData>, UnaryOperator<ItemMetaBuilder> {
-        TEST_ITEM(
-                Material.AXOLOTL_SPAWN_EGG,
-                Component.text("Steel"),
-                new Component[] {Component.text("Lore")},
-                new ItemTypeData.WEAPON(
-                        Archetype.DEVELOPMENT,
-                        AttackType.THROWN,
-                        DamageType.MAGIC,
-                        10.0,
-                        5.0,
-                        2,
-                        new String[][] {
+    // An item rarity only used during development
+    // TODO: Remove this item rarity
+    private static final ItemRarity developmentRarity = new ItemRarity(Component.text("Development"), new NBTCompound());
 
-                        }
-                )
-        ),
+    private enum DevelopmentItems implements Supplier<ItemData>, UnaryOperator<ItemMetaBuilder> {
         ADVENTURING(
                 Material.STONE_SWORD,
                 Component.text("Adventuring"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Adventures themselves can the best of friends")
+                },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
                         AttackType.MELEE,
@@ -78,7 +69,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         BEGINNING(
                 Material.WOODEN_SWORD,
                 Component.text("Beginning"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Every adventure has a beginning, will this be yours?")
+                },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
                         AttackType.MELEE,
@@ -94,7 +89,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         CONQUERING(
                 Material.DIAMOND_SWORD,
                 Component.text("Conquering"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Every great conqueror used a weapon such as this to assert themselves on the plane of Narsia")
+                },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
                         AttackType.MELEE,
@@ -110,7 +109,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         QUESTING(
                 Material.GOLDEN_SWORD,
                 Component.text("Questing"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Quests are a necessary step in the rise to greatness")
+                },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
                         AttackType.MELEE,
@@ -126,7 +129,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         SHIELD_DOT_EXE(
                 Material.SHIELD,
                 Component.text("Shield.exe"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("A shield. Conqueror of arrows, slayer of ... aggressive players?")
+                },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
                         AttackType.MELEE,
@@ -142,7 +149,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         THE_END(
                 Material.NETHERITE_SWORD,
                 Component.text("The End."),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("No lore is necessary for this blade.")
+                },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
                         AttackType.MELEE,
@@ -158,7 +169,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         THE_HOLY_BIBLE(
                 Material.BOOK,
                 Component.text("The Holy Bible"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("It's just a book, nothing to see here officer.")
+                },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
                         AttackType.MELEE,
@@ -174,7 +189,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         TRAINING(
                 Material.IRON_AXE,
                 Component.text("Training"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Train until your hand fades red and your legs follow.")
+                },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
                         AttackType.MELEE,
@@ -190,79 +209,107 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         COAL(
                 Material.COAL, // Material
                 Component.text("Coal"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Coal is a resource that is commonly used for the production of steel")
+                },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
                         1,
                         new String[][] {
-                                
+
                         }
                 )
         ),
         COPPER(
                 Material.NETHER_BRICK, // Material
                 Component.text("Copper"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Copper is a low strength material commonly used for magical and technological items")
+                },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
                         2,
                         new String[][] {
-                                
+
                         }
                 )
         ),
         COW_LEATHER(
                 Material.LEATHER, // MaterialType
                 Component.text("Cow Leather"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Cow leather is a simple and classic material used for many types of applications")
+                },
                 new ItemTypeData.COMPONENT(
                         ComponentType.LEATHER,
                         2,
                         new String[][] {
-                                
+
                         }
                 )
         ),
         GOLD(
                 Material.GOLD_INGOT, // Material
                 Component.text("Gold"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Gold is a symbol of wealth and prosperity, only the greatest warriors will have access to this resource")
+                },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
                         4,
                         new String[][] {
-                                
+
                         }
                 )
         ),
         GOLDEN_CLOTH(
                 Material.RABBIT_HIDE, // Material
                 Component.text("Golden Cloth"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("What is better then gold and leather? Both at once.")
+                },
                 new ItemTypeData.COMPONENT(
                         ComponentType.CLOTH,
                         6,
                         new String[][] {
-                                
+
                         }
                 )
         ),
         IRON(
                 Material.IRON_INGOT, // Material
                 Component.text("Iron"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Iron. Solid. Dependable. It gets the job done.")
+                },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
                         3,
                         new String[][] {
-                                
+
                         }
                 )
         ),
         NETHERITE(
                 Material.NETHERITE_INGOT, // Material
                 Component.text("Netherite"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Netherite is a rare material said to be infused with the strength of the gods")
+                },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
                         6,
@@ -274,7 +321,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         STEEL(
                 Material.IRON_BLOCK, // Material
                 Component.text("Steel"),
-                new Component[] {Component.text("TODO: Lore")},
+                0,
+                developmentRarity,
+                new Component[] {
+                        Component.text("Steel will get the job done and then some, yet it requires a high level blacksmith to produce.")
+                },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
                         5,
@@ -289,10 +340,10 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
 
         DevelopmentItems(
                 @NotNull Material display,
-                // @NotNull ItemRarity rarity,
                 Component displayName,
+                int cmd,
+                @NotNull ItemRarity rarity,
                 @NotNull Component[] lore,
-                // int cmd,
                 @NotNull ItemTypeData itemTypeData
         ) {
             final ItemType type = itemTypeData.getType();
@@ -300,16 +351,28 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
             this.itemTypeData = itemTypeData;
 
             // Add type + rarity to lore
-            componentList.add(type.displayName());
+            componentList.add(
+                    Component.text()
+                            .append(Component.text("Type: "))
+                            .append(type.displayName())
+                            .build()
+            );
+
+            componentList.add(
+                    Component.text()
+                            .append(Component.text("Rarity: "))
+                            .append(rarity.displayName())
+                            .build()
+            );
 
             this.itemData = new ItemData(
                     name(),
                     displayName,
                     display,
                     type,
-                    new ItemRarity(Component.text(""), new NBTCompound()),
+                    rarity,
                     componentList.toArray(Component[]::new),
-                    0
+                    cmd
             );
         }
 

@@ -1,4 +1,4 @@
-package org.narses.narsion.item.type;
+package org.narses.narsion.item.data.type;
 
 public enum AttackType {
     ARROW,

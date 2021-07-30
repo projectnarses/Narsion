@@ -6,13 +6,9 @@ import net.minestom.server.command.builder.CommandContext;
 import static net.minestom.server.command.builder.arguments.ArgumentType.*;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.item.Enchantment;
 import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.attribute.ItemAttribute;
 import org.narses.narsion.NarsionServer;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class ItemCommand extends Command {

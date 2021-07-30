@@ -3,14 +3,12 @@ package org.narses.narsion.classes.abilities.warrior;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
-import net.minestom.server.entity.fakeplayer.FakePlayer;
 import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.utils.time.TimeUnit;
 import org.narses.entities.collision.OffsetBoundingBox;
 import org.narses.entities.thrownitementity.ThrownItemEntity;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.player.NarsionPlayer;
 
 import java.util.Objects;
 

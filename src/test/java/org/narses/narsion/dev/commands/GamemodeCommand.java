@@ -13,7 +13,6 @@ import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.utils.entity.EntityFinder;
-import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
 
 import java.util.List;

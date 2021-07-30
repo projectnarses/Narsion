@@ -2,7 +2,6 @@ package org.narses.narsion.classes.abilities.warrior;
 
 import net.minestom.server.entity.Player;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.player.NarsionPlayer;
 
 public class CleaveAbility {
 	public static final Integer range = 5;

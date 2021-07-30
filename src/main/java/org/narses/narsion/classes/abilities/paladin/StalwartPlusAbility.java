@@ -1,9 +1,7 @@
 package org.narses.narsion.classes.abilities.paladin;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.utils.Position;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.player.NarsionPlayer;
 
 public class StalwartPlusAbility {
 	public static void activate(NarsionServer server, Player player) {
