@@ -2,10 +2,14 @@ package org.narses.narsion.classes.abilities.warrior;
 
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
+import net.minestom.server.entity.EntityCreature;
+import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.metadata.item.ItemEntityMeta;
 import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.utils.time.TimeUnit;
+import org.jetbrains.annotations.NotNull;
 import org.narses.entities.collision.OffsetBoundingBox;
 import org.narses.entities.thrownitementity.ThrownItemEntity;
 import org.narses.narsion.NarsionServer;
@@ -17,12 +21,13 @@ public class WeaponTossAbility {
 	private static final long slowdownTime = 5 * 20; // Slowdown time in ticks
 	private static final int slowdownStrength = 3; // Strength of slow down
 	
-	public static void activate(NarsionServer server, Player player) {
-		Pos entityPosition = player.getPosition().add(0f, -0.2f, 0f);
+	public static void activate(NarsionServer server, @NotNull Player player) {
+		Pos entityPosition = player.getPosition();
 		ItemStack entityItemStack = player.getInventory().getItemInMainHand();
 
+
 		// Create thrown entity
-		final ThrownItemEntity entity = new ThrownItemEntity(entityPosition, entityItemStack, 20);
+		final ThrownItemEntity entity = new ThrownItemEntity(entityPosition, entityItemStack, 15);
 		entity.setInstance(Objects.requireNonNull(player.getInstance()));
 
 		// Set hit callbacks
@@ -35,7 +40,7 @@ public class WeaponTossAbility {
 
 			entity.teleport(entity.getPosition().add(0f, 1.8f, 0f));
 
-			entity.setBoundingBox(new OffsetBoundingBox(entity, 0.1f, 0.1f, 0.1f, 0.0f, 0.7f, 0.0f));
+			entity.setBoundingBox(new OffsetBoundingBox(entity, 0.1f, 0.1f, 0.1f, 0.0f, 0.0f, 0.0f));
 
 			entity.scheduleRemove(15, TimeUnit.SECOND);
 		});

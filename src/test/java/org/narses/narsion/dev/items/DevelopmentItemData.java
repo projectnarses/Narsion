@@ -1,6 +1,9 @@
 package org.narses.narsion.dev.items;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.item.ItemMetaBuilder;
 import net.minestom.server.item.ItemStackBuilder;
 import net.minestom.server.item.Material;
@@ -15,6 +18,7 @@ import org.narses.narsion.item.data.type.AttackType;
 import org.narses.narsion.item.data.type.ComponentType;
 import org.narses.narsion.item.data.type.DamageType;
 import org.narses.narsion.item.data.type.ItemTypeData;
+import org.narses.narsion.util.TextUtils;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -51,8 +55,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Adventuring"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Adventures themselves can the best of friends")
+                new String[] {
+                        "Adventures themselves can the best of friends"
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -71,8 +75,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Beginning"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Every adventure has a beginning, will this be yours?")
+                new String[] {
+                        "Every adventure has a beginning, will this be yours?"
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -91,8 +95,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Conquering"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Every great conqueror used a weapon such as this to assert themselves on the plane of Narsia")
+                new String[] {
+                        "Every great conqueror used a weapon such as this to assert themselves on the plane of Narsia"
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -111,8 +115,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Questing"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Quests are a necessary step in the rise to greatness")
+                new String[] {
+                        "Quests are a necessary step in the rise to greatness"
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -131,8 +135,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Shield.exe"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("A shield. Conqueror of arrows, slayer of ... aggressive players?")
+                new String[] {
+                        "A shield. Conqueror of arrows, slayer of ... aggressive players?"
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -148,11 +152,11 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         ),
         THE_END(
                 Material.NETHERITE_SWORD,
-                Component.text("The End."),
+                Component.text("The End.", NamedTextColor.BLACK),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("No lore is necessary for this blade.")
+                new String[] {
+                        "No lore is necessary for this blade."
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -171,8 +175,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("The Holy Bible"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("It's just a book, nothing to see here officer.")
+                new String[] {
+                        "It's just a book, nothing to see here officer."
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -191,8 +195,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Training"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Train until your hand fades red and your legs follow.")
+                new String[] {
+                        "Train until your hand fades red and your legs follow."
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -211,8 +215,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Coal"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Coal is a resource that is commonly used for the production of steel")
+                new String[] {
+                        "Coal is a resource that is commonly used for the production of steel"
                 },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
@@ -227,8 +231,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Copper"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Copper is a low strength material commonly used for magical and technological items")
+                new String[] {
+                        "Copper is a low strength material commonly used for magical and technological items"
                 },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
@@ -243,8 +247,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Cow Leather"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Cow leather is a simple and classic material used for many types of applications")
+                new String[] {
+                        "Cow leather is a simple and classic material used for many types of applications"
                 },
                 new ItemTypeData.COMPONENT(
                         ComponentType.LEATHER,
@@ -259,8 +263,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Gold"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Gold is a symbol of wealth and prosperity, only the greatest warriors will have access to this resource")
+                new String[] {
+                        "Gold is a symbol of wealth and prosperity, only the greatest warriors will have access to this resource"
                 },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
@@ -275,8 +279,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Golden Cloth"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("What is better then gold and leather? Both at once.")
+                new String[] {
+                        "What is better then gold and leather? Both at once."
                 },
                 new ItemTypeData.COMPONENT(
                         ComponentType.CLOTH,
@@ -291,8 +295,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Iron"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Iron. Solid. Dependable. It gets the job done.")
+                new String[] {
+                        "Iron. Solid. Dependable. It gets the job done."
                 },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
@@ -307,8 +311,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Netherite"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Netherite is a rare material said to be infused with the strength of the gods")
+                new String[] {
+                        "Netherite is a rare material said to be infused with the strength of the gods"
                 },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
@@ -323,8 +327,8 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component.text("Steel"),
                 0,
                 developmentRarity,
-                new Component[] {
-                        Component.text("Steel will get the job done and then some, yet it requires a high level blacksmith to produce.")
+                new String[] {
+                        "Steel will get the job done and then some, yet it requires a high level blacksmith to produce."
                 },
                 new ItemTypeData.COMPONENT(
                         ComponentType.ORE,
@@ -343,12 +347,20 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
                 Component displayName,
                 int cmd,
                 @NotNull ItemRarity rarity,
-                @NotNull Component[] lore,
+                @NotNull String[] lore,
                 @NotNull ItemTypeData itemTypeData
         ) {
             final ItemType type = itemTypeData.getType();
-            final List<Component> componentList = new ArrayList<>(Arrays.asList(lore));
             this.itemTypeData = itemTypeData;
+
+            // Create lore
+            final Style loreStyle = Style.style()
+                    .color(NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false)
+                    .build();
+
+            final List<Component> preparedLore = TextUtils.prepareLore(loreStyle, lore);
+            final List<Component> componentList = new ArrayList<>(preparedLore);
 
             // Add type + rarity to lore
             componentList.add(

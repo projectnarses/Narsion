@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     // Minestom (new block api)
-    implementation 'com.github.Minestom:Minestom:new-block-api-SNAPSHOT'
+    implementation 'com.github.Minestom:Minestom:-SNAPSHOT'
 
     // Entity library
     implementation 'com.github.projectnarses:NarsionEntities:0f426215bb'
@@ -26,6 +26,12 @@ dependencies {
 
     // Toml config library
     implementation 'com.github.mwanji:toml4j:4d206e4af6'
+
+    // sftp library
+    implementation "com.jcraft:jsch:0.1.55"
+
+    // Raycast Library
+    implementation 'com.github.EmortalMC:Rayfast:07d8daf'
 }
 
 jar {

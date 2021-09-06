@@ -1,0 +1,20 @@
+# Narsion Server configuration
+
+[Server]
+    IP = "0.0.0.0"
+    Port = 25565
+    OnlineMode = true
+    MOTD = "A Minecraft Server\u00A7\n\u00A74Here is another line"
+
+[Velocity]
+    Enabled = 0
+    Secret = "SecretIsHereForVelocity"
+
+[World]
+    SpawnX = 2997.5
+    SpawnY = 67.0
+    SpawnZ = -67.0
+    PasswordInput = ""
+
+[Debug]
+    RegionBorders = false
