@@ -45,7 +45,7 @@ import java.util.function.BiConsumer;
 public enum Ability {
     // Abilities
     // To register a new ability, use this syntax:
-    // AbilityName(AbilityPlayerClass, Cooldown (in ticks), Callback),
+    // AbilityName(AbilityPlayerClass, Cooldown (in ms), Callback),
 
     // Archer
     // Ability 1: Volley - Sends a scatter of arrows in a cone in front of them.
@@ -71,15 +71,15 @@ public enum Ability {
 
     // Warrior
     // Ability 1: Cleave - Attack hits in a 360 degree, 6 block radius
-    CLEAVE("WARRIOR", 20, CleaveAbility::activate),
+    CLEAVE("WARRIOR", 2000, CleaveAbility::activate),
     // Ability 2: Expose The Weak - TODO: exposes weak, non-friendly players
-    EXPOSE_THE_WEAK("WARRIOR", 60, ExposeTheWeakAbility::activate),
+    EXPOSE_THE_WEAK("WARRIOR", 6000, ExposeTheWeakAbility::activate),
     // Ability 3: Stalwart - Stops the next attack from effecting the user
-    STALWART("WARRIOR", 30, FortifyAbility::activate),
+    STALWART("WARRIOR", 3000, FortifyAbility::activate),
     // Ability 4: Weapon Toss - Weapon is thrown out to deal damage + slow down enemies
-    WEAPON_TOSS("WARRIOR", 60, WeaponTossAbility::activate),
+    WEAPON_TOSS("WARRIOR", 6000, WeaponTossAbility::activate),
     // Ability 5:
-    LACERATE("WARRIOR", 180, LacerateAbility::activate),
+    LACERATE("WARRIOR", 18000, LacerateAbility::activate),
 
     // Cleric
     // Ability 1: Smokescreen - After gathering magic energy which is then dispersed into the atmosphere for 4 seconds. Gain 3 smoke orbs which can be fired off. At each block where a smoke orb lands, a 5x5 square is instantly filled with an 8 block high cloud of black smoke. These clouds last for 10 seconds after landing.
@@ -166,11 +166,15 @@ public enum Ability {
     private final BiConsumer<NarsionServer, Player> abilityCallback;
     private final int cooldown;
     private final String playerClassName;
+    private final String name;
+    private final char symbol;
 
     Ability(String playerClassName, int cooldown, BiConsumer<NarsionServer, Player> abilityCallback) {
         this.playerClassName = playerClassName;
         this.cooldown = cooldown;
         this.abilityCallback = abilityCallback;
+        this.symbol = this.name().charAt(0);
+        this.name = this.name();
     }
 
     /**
@@ -186,7 +190,7 @@ public enum Ability {
     }
 
     /**
-     * @return the cooldown
+     * @return the cooldown in ms
      */
     public int getCooldown() {
         return this.cooldown;
@@ -197,5 +201,13 @@ public enum Ability {
      */
     public String getPlayerClassName() {
         return this.playerClassName;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public char getSymbol() {
+        return this.symbol;
     }
 }

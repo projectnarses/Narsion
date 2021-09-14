@@ -5,6 +5,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.moandjiezana.toml.Toml;
+import net.minestom.server.instance.Chunk;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.util.CryptoUtil;
 
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -168,7 +170,7 @@ public class WorldDownloader {
         System.out.println("Downloaded: " + path + " (" + (numFiles.intValue() - numFilesDownloaded.getCount()) + "/" + numFiles.intValue() + ")");
     }
 
-    private static final Map<Thread, ChannelSftp> channels = new HashMap<>();
+    private static final Map<Thread, ChannelSftp> channels = new ConcurrentHashMap<>();
 
     private static ChannelSftp getNextChannel() {
 

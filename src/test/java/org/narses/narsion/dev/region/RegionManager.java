@@ -1,6 +1,7 @@
 package org.narses.narsion.dev.region;
 
-import dev.emortal.rayfast.grid.GridCast;
+import dev.emortal.rayfast.casting.grid.GridCast;
+import dev.emortal.rayfast.vector.Vector3d;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -14,7 +15,8 @@ import net.minestom.server.utils.PacketUtils;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.dev.math.MathUtil;
+import org.narses.narsion.dev.math.ArrayUtil;
+import org.narses.narsion.dev.world.narsionworlddata.NarsionRegions;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.util.Pair;
 
@@ -25,7 +27,7 @@ public class RegionManager {
 
     private final @NotNull NarsionServer server;
 
-    private Region[] allRegions = new Region[] {};
+    private final @NotNull Region[] allRegions = NarsionRegions.values();
 
     public RegionManager(@NotNull NarsionServer server) {
         this.server = server;
@@ -46,20 +48,6 @@ public class RegionManager {
     }
 
     /**
-     * Adds a region to the region manager
-     * <br><br>
-     * Note: This is an expensive operation and should only be done on startup
-     * @param regions the region to add
-     */
-    public void addRegion(@NotNull Region... regions) {
-        Set<Region> regionSet = Arrays.stream(allRegions).collect(Collectors.toSet());
-
-        regionSet.addAll(List.of(regions));
-
-        this.allRegions = regionSet.toArray(Region[]::new);
-    }
-
-    /**
      * Shows the walls of the region data
      */
     private void showParticles(Region region) {
@@ -68,7 +56,7 @@ public class RegionManager {
         }
 
         for (Pos[] face : region.getPolygon().getFaces()) {
-            for (Pair<Pos, Pos> pair : MathUtil.makePairs(face)) {
+            for (Pair<Pos, Pos> pair : ArrayUtil.makePairs(face)) {
                 Pos first = pair.getFirst();
 
                 Pos second = pair.getSecond();
@@ -78,7 +66,7 @@ public class RegionManager {
                 double length = direction.length();
                 direction = direction.normalize();
 
-                Iterator<double[]> iterator = GridCast.createExactGridIterator(
+                Iterable<Vector3d> iterable = GridCast.createExactGridIterator(
                         // Start
                         first.x(), first.y(), first.z(),
 
@@ -92,9 +80,8 @@ public class RegionManager {
                         length
                 );
 
-                while (iterator.hasNext()) {
-                    double[] position = iterator.next();
-                    Point point = new Pos(position[0], position[1], position[2]);
+                for (Vector3d position : iterable) {
+                    Point point = new Pos(position.x(), position.y(), position.z());
 
                     ParticlePacket packet = ParticleCreator.createParticlePacket(Particle.LARGE_SMOKE,
                             point.x(), point.y(), point.z(),
@@ -110,7 +97,8 @@ public class RegionManager {
 
     // Called once every time a player gets ticked
     private void updatePlayer(PlayerTickEvent event) {
-        NarsionPlayer playerWrapper = server.player(event.getPlayer());
+        Player player = event.getPlayer();
+        NarsionPlayer playerWrapper = server.wrap(player);
 
         if (!(playerWrapper instanceof Regioned regioned)) {
             return;
@@ -125,11 +113,11 @@ public class RegionManager {
 
             if (inside) {
                 if (regionSet.add(region)) {
-                    playerWrapper.getPlayer().sendMessage("Entering Region: " + region.getName());
+                    region.onPlayerEnter(player);
                 }
             } else {
                 if (regionSet.remove(region)) {
-                    playerWrapper.getPlayer().sendMessage("Exiting Region: " + region.getName());
+                    region.onPlayerExit(player);
                 }
             }
         }

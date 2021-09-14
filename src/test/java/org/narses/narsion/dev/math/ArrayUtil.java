@@ -2,7 +2,8 @@ package org.narses.narsion.dev.math;
 
 import org.narses.narsion.util.Pair;
 
-public class MathUtil {
+@SuppressWarnings("ALL")
+public class ArrayUtil {
 
     public static <E> Pair<E, E>[] makePairs(E[] values) {
 

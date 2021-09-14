@@ -86,7 +86,7 @@ public abstract class NarsionServer {
      * @return the wrapped player object
      */
     @SuppressWarnings("unchecked")
-    public @NotNull <P extends NarsionPlayer> P player(Player player) {
+    public @NotNull <P extends NarsionPlayer> P wrap(Player player) {
         return (P) playerWrapperFunction.apply(player);
     }
 

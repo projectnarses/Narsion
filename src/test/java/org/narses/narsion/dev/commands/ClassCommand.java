@@ -46,7 +46,7 @@ public class ClassCommand extends Command {
 
     private void abilitySuggestion(CommandSender sender, CommandContext context, Suggestion suggestion) {
         Player player = sender.asPlayer();
-        NarsionPlayer narsionPlayer = server.player(player);
+        NarsionPlayer narsionPlayer = server.wrap(player);
 
         // Get all class abilities
         Ability[] abilities = narsionPlayer.getPlayerClass().abilities();
@@ -61,14 +61,14 @@ public class ClassCommand extends Command {
 
     private void defaultUsage(CommandSender sender, CommandContext context) {
         Player player = sender.asPlayer();
-        NarsionPlayer narsionPlayer = server.player(player);
+        NarsionPlayer narsionPlayer = server.wrap(player);
 
         sender.sendMessage("Your class is: " + narsionPlayer.getPlayerClass().className());
     }
 
     private void setUsage(CommandSender sender, CommandContext context) {
         Player player = sender.asPlayer();
-        NarsionPlayer narsionPlayer = server.player(player);
+        NarsionPlayer narsionPlayer = server.wrap(player);
 
         // get player class
         String className = context.get("class");
@@ -83,7 +83,7 @@ public class ClassCommand extends Command {
 
     private void abilityUsage(CommandSender sender, CommandContext context) {
         Player player = sender.asPlayer();
-        NarsionPlayer narsionPlayer = server.player(player);
+        NarsionPlayer narsionPlayer = server.wrap(player);
 
         // Get ability name
         String abilityName = context.get("ability");

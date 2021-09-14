@@ -6,6 +6,8 @@ plugins {
 group 'org.narses'
 version 'DEVELOPMENTBUILD-ALPHA'
 
+targetCompatibility = '16'
+
 repositories {
     mavenCentral()
 
@@ -31,7 +33,7 @@ dependencies {
     implementation "com.jcraft:jsch:0.1.55"
 
     // Raycast Library
-    implementation 'com.github.EmortalMC:Rayfast:07d8daf'
+    implementation 'com.github.EmortalMC:Rayfast:34a50846af'
 }
 
 jar {

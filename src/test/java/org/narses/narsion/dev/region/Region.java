@@ -1,61 +1,74 @@
 package org.narses.narsion.dev.region;
 
-import java.time.Duration;
 import java.util.*;
 
 import net.minestom.server.Viewable;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.narses.narsion.dev.math.geometry.GeoPolygon;
+import org.narses.narsion.dev.math.geometry.Area3dPolygon;
 
-public class Region implements Viewable {
-	// Region fields
-	private final @NotNull String name;
-	private final @NotNull GeoPolygon polygon;
-	private final @NotNull RegionType type;
+public interface Region extends Viewable {
+	public static Region of(
+			@NotNull final String name,
+			final boolean claimable,
+			@NotNull final RegionType type,
+			@NotNull final Area3dPolygon polygon
+	) {
+		return new Region() {
 
-	private final @NotNull Set<Player> viewers = new HashSet<>();
-	
-	public Region(@NotNull String name, @NotNull RegionType type, @NotNull GeoPolygon polygon) {
-		this.polygon = polygon;
-		this.name = name;
-		this.type = type;
+			private final Set<Player> viewers = new HashSet<>();
+
+			@Override
+			public @NotNull String getName() {
+				return name;
+			}
+
+			@Override
+			public boolean getClaimable() {
+				return claimable;
+			}
+
+			@Override
+			public @NotNull RegionType getType() {
+				return type;
+			}
+
+			@Override
+			public @NotNull Area3dPolygon getPolygon() {
+				return polygon;
+			}
+
+			@Override
+			public boolean addViewer(@NotNull Player player) {
+				return viewers.add(player);
+			}
+
+			@Override
+			public boolean removeViewer(@NotNull Player player) {
+				return viewers.remove(player);
+			}
+
+			@Override
+			public @NotNull Set<Player> getViewers() {
+				return viewers;
+			}
+		};
 	}
 
-	public @NotNull String getName() {
-		return name;
+	public @NotNull String getName();
+
+	public boolean getClaimable();
+
+	public @NotNull RegionType getType();
+
+	public @NotNull Area3dPolygon getPolygon();
+
+	public default void onPlayerEnter(@NotNull Player player) {
 	}
 
-	public @NotNull RegionType getType() {
-		return type;
-	}
-	
-	/**
-	 * Shows this region to the specified player
-	 * 
-	 * @param player the player to show the region to
-	 */
-	@Override
-	public boolean addViewer(@NotNull Player player) {
-		return viewers.add(player);
-	}
-	
-	/**
-	 * Hides this region from the specified player
-	 * 
-	 * @param player the player to stop showing this region to
-	 */
-	@Override
-	public boolean removeViewer(@NotNull Player player) {
-		return viewers.remove(player);
-	}
-	
-	@Override
-	public @NotNull Set<Player> getViewers() {
-		return viewers;
+	public default void onPlayerUpdate(long ms, @NotNull Player player) {
 	}
 
-	public @NotNull GeoPolygon getPolygon() {
-		return polygon;
+	public default void onPlayerExit(@NotNull Player player) {
 	}
 }

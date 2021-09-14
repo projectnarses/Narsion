@@ -6,5 +6,9 @@ package org.narses.narsion.dev.region;
  *
  */
 public enum RegionType {
-	SPAWN, CITY, TOWN, TOWER
+	SPAWN,
+    CITY,
+    TOWN,
+    TOWER,
+    MARKET;
 }

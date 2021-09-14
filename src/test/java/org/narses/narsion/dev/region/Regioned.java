@@ -22,7 +22,7 @@ public interface Regioned {
     /**
      * Gets the position this regioned object is at
      *
-     * @return the posigion of this regioned object
+     * @return the position of this regioned object
      */
     @NotNull Point getPosition();
 }
