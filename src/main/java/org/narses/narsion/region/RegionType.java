@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.region;
+package org.narses.narsion.region;
 /**
  * Type of regions sorted by size
  * 

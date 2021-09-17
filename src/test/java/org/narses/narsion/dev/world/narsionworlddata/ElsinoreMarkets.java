@@ -3,9 +3,9 @@ package org.narses.narsion.dev.world.narsionworlddata;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.narses.narsion.dev.math.geometry.Area3dPolygon;
-import org.narses.narsion.dev.region.RegionType;
-import org.narses.narsion.dev.region.StaticRegion;
+import org.narses.narsion.math.geometry.Area3dPolygon;
+import org.narses.narsion.region.RegionType;
+import org.narses.narsion.region.StaticRegion;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -4,10 +4,8 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.moandjiezana.toml.Toml;
-import net.minestom.server.instance.Chunk;
 import org.jetbrains.annotations.NotNull;
-import org.narses.narsion.util.CryptoUtil;
+import org.narses.narsion.dev.DevServer;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -15,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
@@ -29,19 +26,60 @@ public class WorldDownloader {
 
     private static final String remoteHost = "panel.tempusrift.net";
     private static final int port = 2022;
-    private static final String username = "krystilize.68f85fd7";
-
-    private static final ExecutorService executor = Executors.newFixedThreadPool(8);
-
-    private static String pass = "";
-
+    private static final String username = "public.68f85fd7";
     private static final String downloadDir = "Narses6k";
     private static final String saveDir = "world";
     private static final String timekeeper = "level.dat";
     private static final long updateInterval = 86400; // In seconds
 
-    private static final AtomicInteger numFiles = new AtomicInteger(0);
-    private static CountDownLatch numFilesDownloaded;
+    private final ExecutorService executor = Executors.newFixedThreadPool(8);
+
+    private final String pass;
+    private final AtomicInteger numFiles = new AtomicInteger(0);
+    private CountDownLatch numFilesDownloaded;
+
+    private final @NotNull DevServer server;
+
+    public WorldDownloader(@NotNull DevServer server) {
+        this.server = server;
+        this.pass = "Fp63XC!ezq4P8b";
+
+        System.out.println("Checking for new world version");
+
+        if (!shouldDownload()) {
+            System.out.println("Finished world updating");
+            return;
+        }
+
+        System.out.println("Connecting to world storage...");
+
+        ChannelSftp channel = setupJsch();
+
+        if (channel == null) {
+            System.out.println("Error updating world.");
+            return;
+        }
+
+        new File(saveDir).mkdir();
+        try {
+            downloadFolder(downloadDir, channel);
+        } catch (SftpException e) {
+            e.printStackTrace();
+        }
+
+        new File(downloadDir).delete();
+        this.numFilesDownloaded = new CountDownLatch(numFiles.intValue());
+
+        try {
+            numFilesDownloaded.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Finished world updating");
+
+        channel.exit();
+    }
 
 
     private static final String[] ignoredDirs = {
@@ -54,37 +92,11 @@ public class WorldDownloader {
     };
 
 
-    public static void ensureLatestWorld(@NotNull Toml config) throws Throwable {
+    public void ensureLatestWorld() throws Throwable {
 
-        // TODO: Fix security by using a public read only account
-        String secretKey = "35c02ad3b60c4d12a758f5c4fabbf865";
-        pass = CryptoUtil.decrypt(secretKey, config.getString("World.PasswordInput"));
-
-        System.out.println("Checking for new world version");
-
-        if (!shouldDownload(downloadDir)) {
-            System.out.println("Finished world updating");
-            return;
-        }
-
-        System.out.println("Connecting to world storage...");
-
-        ChannelSftp channel = setupJsch();
-
-        new File(saveDir).mkdir();
-        downloadFolder(downloadDir, channel);
-
-        new File(downloadDir).delete();
-        numFilesDownloaded = new CountDownLatch(numFiles.intValue());
-
-        numFilesDownloaded.await();
-
-        System.out.println("Finished world updating");
-
-        channel.exit();
     }
 
-    private static boolean shouldDownload(String path) {
+    private boolean shouldDownload() {
 
         Duration time = Duration.ofMillis(System.currentTimeMillis());
 
@@ -116,7 +128,7 @@ public class WorldDownloader {
         return false;
     }
 
-    private static void downloadFolder(String path, ChannelSftp channel) throws SftpException {
+    private void downloadFolder(String path, ChannelSftp channel) throws SftpException {
 
         for (String dir : ignoredDirs) {
             if (dir.equals(path)) {
@@ -148,7 +160,7 @@ public class WorldDownloader {
         }
     }
 
-    private static void downloadFile(String path) throws SftpException, IOException {
+    private void downloadFile(String path) throws SftpException, IOException {
 
         ChannelSftp channel = getNextChannel();
 
@@ -170,9 +182,9 @@ public class WorldDownloader {
         System.out.println("Downloaded: " + path + " (" + (numFiles.intValue() - numFilesDownloaded.getCount()) + "/" + numFiles.intValue() + ")");
     }
 
-    private static final Map<Thread, ChannelSftp> channels = new ConcurrentHashMap<>();
+    private final Map<Thread, ChannelSftp> channels = new ConcurrentHashMap<>();
 
-    private static ChannelSftp getNextChannel() {
+    private ChannelSftp getNextChannel() {
 
         Thread thread = Thread.currentThread();
 
@@ -181,7 +193,7 @@ public class WorldDownloader {
         return channels.get(thread);
     }
 
-    private static ChannelSftp setupJsch() {
+    private ChannelSftp setupJsch() {
         try {
             JSch jsch = new JSch();
             Session jschSession = jsch.getSession(username, remoteHost);

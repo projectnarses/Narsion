@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.region;
+package org.narses.narsion.region;
 
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;

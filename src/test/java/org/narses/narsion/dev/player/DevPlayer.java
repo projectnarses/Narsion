@@ -14,9 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.classes.PlayerClass;
 import org.narses.narsion.classes.abilities.Ability;
-import org.narses.narsion.quest.Quest;
-import org.narses.narsion.dev.region.Region;
-import org.narses.narsion.dev.region.Regioned;
+import org.narses.narsion.region.Region;
+import org.narses.narsion.region.Regioned;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.util.MathUtils;
 

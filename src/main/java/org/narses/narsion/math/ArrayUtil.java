@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.math;
+package org.narses.narsion.math;
 
 import org.narses.narsion.util.Pair;
 

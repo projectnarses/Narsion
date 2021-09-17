@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.region;
+package org.narses.narsion.region;
 
 import dev.emortal.rayfast.casting.grid.GridCast;
 import dev.emortal.rayfast.vector.Vector3d;
@@ -15,9 +15,8 @@ import net.minestom.server.utils.PacketUtils;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.dev.math.ArrayUtil;
-import org.narses.narsion.dev.math.geometry.Area3dPolygon;
-import org.narses.narsion.dev.world.narsionworlddata.NarsionRegions;
+import org.narses.narsion.math.ArrayUtil;
+import org.narses.narsion.math.geometry.Area3dPolygon;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.util.Pair;
 
@@ -27,10 +26,11 @@ public class RegionManager {
 
     private final @NotNull NarsionServer server;
 
-    private final @NotNull Region[] allRegions = NarsionRegions.values();
+    private final @NotNull Region[] regions;
 
-    public RegionManager(@NotNull NarsionServer server) {
+    public RegionManager(@NotNull NarsionServer server, @NotNull Region[] regions) {
         this.server = server;
+        this.regions = regions;
 
         // Add the player tick listener
         MinecraftServer.getGlobalEventHandler()
@@ -39,7 +39,7 @@ public class RegionManager {
         // Schedule debug particles every second
         MinecraftServer.getSchedulerManager()
                 .buildTask(() -> {
-                    for (Region region : allRegions) {
+                    for (Region region : this.regions) {
                         showParticles(region);
                     }
                 })
@@ -112,7 +112,7 @@ public class RegionManager {
         Set<Region> regionSet = regioned.getRegions();
         Point position = regioned.getPosition();
 
-        for (Region region : allRegions) {
+        for (Region region : regions) {
             boolean inside = region.getArea().containsPoint(position.x(), position.y(), position.z());
 
             if (inside) {

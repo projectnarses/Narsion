@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.math.geometry;
+package org.narses.narsion.math.geometry;
 
 import dev.emortal.rayfast.area.Intersection;
 import dev.emortal.rayfast.area.area3d.Area3d;

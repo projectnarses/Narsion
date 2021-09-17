@@ -15,7 +15,7 @@ import org.narses.narsion.classes.abilities.Ability;
 import org.narses.narsion.dev.DevServer;
 import org.narses.narsion.dev.player.DevPlayer;
 import org.narses.narsion.dev.world.narsionworlddata.quests.NarsionQuests;
-import org.narses.narsion.dev.region.Region;
+import org.narses.narsion.region.Region;
 import org.narses.narsion.dev.world.narsionworlddata.NarsionRegions;
 import org.narses.narsion.player.NarsionPlayer;
 

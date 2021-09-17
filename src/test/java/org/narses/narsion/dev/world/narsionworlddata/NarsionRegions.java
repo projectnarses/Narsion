@@ -4,9 +4,8 @@ import dev.emortal.rayfast.area.area3d.Area3d;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.dev.math.geometry.Area3dPolygon;
-import org.narses.narsion.dev.region.Region;
-import org.narses.narsion.dev.region.RegionType;
+import org.narses.narsion.region.Region;
+import org.narses.narsion.region.RegionType;
 
 import java.util.Set;
 import java.util.function.Supplier;

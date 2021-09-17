@@ -18,7 +18,9 @@ import org.narses.narsion.dev.player.DevPlayer;
 import org.narses.narsion.dev.events.DevEvents;
 import org.narses.narsion.dev.items.DevelopmentItemData;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.dev.region.RegionManager;
+import org.narses.narsion.dev.world.WorldDownloader;
+import org.narses.narsion.dev.world.narsionworlddata.NarsionRegions;
+import org.narses.narsion.region.RegionManager;
 import org.narses.narsion.dev.world.blockhandlers.StaticBlocks;
 import org.narses.narsion.dev.world.npc.NarsionNPCs;
 
@@ -36,7 +38,7 @@ public class DevServer extends NarsionServer {
 
     private static final File PLAYER_CLASSES_CONFIG = new File("PlayerClasses.toml");
 
-    private final RegionManager regionManager = new RegionManager(this);
+    private final RegionManager regionManager;
     private final InstanceContainer primaryInstance;
 
     /**
@@ -55,16 +57,15 @@ public class DevServer extends NarsionServer {
         );
 
         // Try download world first
-        try {
-            // WorldDownloader.ensureLatestWorld(config);
-        } catch (final Throwable e) {
-            e.printStackTrace();
-        }
+        new WorldDownloader(this);
 
         // Start dev instance
         this.primaryInstance = MinecraftServer.getInstanceManager().createInstanceContainer();
         primaryInstance.setChunkGenerator(new DevelopmentChunkGenerator());
         // instanceContainer.setChunkLoader(new AnvilLoader("world"));
+
+        // Setup regions
+        this.regionManager = new RegionManager(this, NarsionRegions.values());
 
         // Spawn all npcs
         this.spawnNpcs(primaryInstance);
