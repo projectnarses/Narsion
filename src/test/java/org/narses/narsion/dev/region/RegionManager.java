@@ -16,12 +16,12 @@ import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.dev.math.ArrayUtil;
+import org.narses.narsion.dev.math.geometry.Area3dPolygon;
 import org.narses.narsion.dev.world.narsionworlddata.NarsionRegions;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.util.Pair;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RegionManager {
 
@@ -55,7 +55,11 @@ public class RegionManager {
             return;
         }
 
-        for (Pos[] face : region.getPolygon().getFaces()) {
+        if (!(region.getArea() instanceof Area3dPolygon polygon)) {
+            return;
+        }
+
+        for (Pos[] face : polygon.getFaces()) {
             for (Pair<Pos, Pos> pair : ArrayUtil.makePairs(face)) {
                 Pos first = pair.getFirst();
 
@@ -109,15 +113,15 @@ public class RegionManager {
         Point position = regioned.getPosition();
 
         for (Region region : allRegions) {
-            boolean inside = region.getPolygon().isPointInside3DPolygon(position);
+            boolean inside = region.getArea().containsPoint(position.x(), position.y(), position.z());
 
             if (inside) {
                 if (regionSet.add(region)) {
-                    region.onPlayerEnter(player);
+                    region.onPlayerEnter(server, player);
                 }
             } else {
                 if (regionSet.remove(region)) {
-                    region.onPlayerExit(player);
+                    region.onPlayerExit(server, player);
                 }
             }
         }

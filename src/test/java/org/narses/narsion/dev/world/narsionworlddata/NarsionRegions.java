@@ -1,7 +1,9 @@
 package org.narses.narsion.dev.world.narsionworlddata;
 
+import dev.emortal.rayfast.area.area3d.Area3d;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.narses.narsion.NarsionServer;
 import org.narses.narsion.dev.math.geometry.Area3dPolygon;
 import org.narses.narsion.dev.region.Region;
 import org.narses.narsion.dev.region.RegionType;
@@ -37,8 +39,18 @@ public enum NarsionRegions implements Region {
     }
 
     @Override
-    public @NotNull Area3dPolygon getPolygon() {
-        return region.getPolygon();
+    public @NotNull Area3d getArea() {
+        return region.getArea();
+    }
+
+    @Override
+    public void onPlayerEnter(@NotNull NarsionServer server, @NotNull Player player) {
+        region.onPlayerEnter(server, player);
+    }
+
+    @Override
+    public void onPlayerExit(@NotNull NarsionServer server, @NotNull Player player) {
+        region.onPlayerExit(server, player);
     }
 
     @Override

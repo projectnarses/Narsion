@@ -1,6 +1,7 @@
 package org.narses.narsion.dev.events;
 
 import com.moandjiezana.toml.Toml;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
@@ -8,10 +9,12 @@ import net.minestom.server.event.EventNode;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.event.trait.CancellableEvent;
+import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.classes.abilities.Ability;
 import org.narses.narsion.dev.DevServer;
 import org.narses.narsion.dev.player.DevPlayer;
+import org.narses.narsion.dev.world.narsionworlddata.quests.NarsionQuests;
 import org.narses.narsion.dev.region.Region;
 import org.narses.narsion.dev.world.narsionworlddata.NarsionRegions;
 import org.narses.narsion.player.NarsionPlayer;
@@ -19,13 +22,13 @@ import org.narses.narsion.player.NarsionPlayer;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Events {
+public class DevEvents {
 
     private final @NotNull DevServer server;
 
     private final Pos respawnPoint;
 
-    public Events(@NotNull DevServer server) {
+    public DevEvents(@NotNull DevServer server) {
         this.server = server;
 
         // Get respawn point from config
@@ -51,6 +54,8 @@ public class Events {
     public void handlePlayerLoginEvent(PlayerLoginEvent event) {
         Player player = event.getPlayer();
 
+        player.getPlayerConnection().sendPacket(server.getNpcAddInfoPacket());
+
         event.setSpawningInstance(server.getPrimaryInstance());
         player.setRespawnPoint(respawnPoint);
         player.setPermissionLevel(4);
@@ -58,6 +63,16 @@ public class Events {
 
     public void handlePlayerSpawnEvent(PlayerSpawnEvent event) {
         Player player = event.getPlayer();
+
+        if (!event.isFirstSpawn()) {
+            return;
+        }
+
+        // Hide npcs from tablist
+        MinecraftServer.getSchedulerManager()
+                .buildTask(() -> player.getPlayerConnection().sendPacket(server.getNpcHideInfoPacket()))
+                .delay(20, TimeUnit.SERVER_TICK)
+                .schedule();
 
         player.setItemInMainHand(
                 server.getItemStackProvider()
@@ -71,6 +86,8 @@ public class Events {
         for (final Region region : NarsionRegions.values()) {
             region.addViewer(player);
         }
+
+        NarsionQuests.EXAMPLE.embark(server, player);
     }
 
     public void handleItemDropEvent(ItemDropEvent event) {
@@ -140,12 +157,14 @@ public class Events {
 
         DevPlayer devPlayer = server.wrap(player);
 
-        if (!devPlayer.activateAbility()) {
-            Ability ability = devPlayer.getSelectedAbility();
-            int seconds =  ability.getCooldown() - devPlayer.getAbilityCooldown(devPlayer.getAbilitySlot());
-            seconds /= 1000;
-            player.sendMessage("Ability: " + devPlayer.getSelectedAbility() + " has " + seconds + " seconds until it can be used.");
+        if (devPlayer.activateAbility()) {
+            return;
         }
+
+        Ability ability = devPlayer.getSelectedAbility();
+        int seconds =  ability.getCooldown() - devPlayer.getAbilityCooldown(devPlayer.getAbilitySlot());
+        seconds /= 1000;
+        player.sendMessage("Ability: " + devPlayer.getSelectedAbility() + " has " + seconds + " seconds until it can be used.");
     }
 
     public void cancelEvent(CancellableEvent event) {

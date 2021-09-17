@@ -1,5 +1,6 @@
 package org.narses.narsion.classes.abilities;
 
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
@@ -38,6 +39,7 @@ import org.narses.narsion.classes.abilities.warrior.CleaveAbility;
 import org.narses.narsion.classes.abilities.warrior.ExposeTheWeakAbility;
 import org.narses.narsion.classes.abilities.warrior.LacerateAbility;
 import org.narses.narsion.classes.abilities.warrior.WeaponTossAbility;
+import org.narses.narsion.events.PlayerAbilityEvent;
 
 import java.util.Arrays;
 import java.util.function.BiConsumer;
@@ -184,6 +186,11 @@ public enum Ability {
      * @param player the player to activate on
      */
     public void activate(@NotNull NarsionServer server, @NotNull Player player) {
+
+        // Handle event
+        MinecraftServer.getGlobalEventHandler()
+                .call(new PlayerAbilityEvent(player, this));
+
         if (this.abilityCallback != null) {
             this.abilityCallback.accept(server, player);
         }

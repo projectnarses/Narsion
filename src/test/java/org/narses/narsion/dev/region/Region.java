@@ -2,17 +2,18 @@ package org.narses.narsion.dev.region;
 
 import java.util.*;
 
+import dev.emortal.rayfast.area.area3d.Area3d;
 import net.minestom.server.Viewable;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.narses.narsion.dev.math.geometry.Area3dPolygon;
+import org.narses.narsion.NarsionServer;
 
 public interface Region extends Viewable {
 	public static Region of(
 			@NotNull final String name,
 			final boolean claimable,
 			@NotNull final RegionType type,
-			@NotNull final Area3dPolygon polygon
+			@NotNull final Area3d polygon
 	) {
 		return new Region() {
 
@@ -34,7 +35,7 @@ public interface Region extends Viewable {
 			}
 
 			@Override
-			public @NotNull Area3dPolygon getPolygon() {
+			public @NotNull Area3d getArea() {
 				return polygon;
 			}
 
@@ -61,14 +62,11 @@ public interface Region extends Viewable {
 
 	public @NotNull RegionType getType();
 
-	public @NotNull Area3dPolygon getPolygon();
+	public @NotNull Area3d getArea();
 
-	public default void onPlayerEnter(@NotNull Player player) {
+	public default void onPlayerEnter(@NotNull NarsionServer server, @NotNull Player player) {
 	}
 
-	public default void onPlayerUpdate(long ms, @NotNull Player player) {
-	}
-
-	public default void onPlayerExit(@NotNull Player player) {
+	public default void onPlayerExit(@NotNull NarsionServer server, @NotNull Player player) {
 	}
 }

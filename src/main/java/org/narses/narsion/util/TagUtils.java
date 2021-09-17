@@ -12,6 +12,17 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class TagUtils {
+
+    public static Tag<Boolean> Boolean(String key) {
+        TagSerializer<Boolean> serializer = new StandardGenerator<>(
+                Tag.Byte(key),
+                (someByte) -> someByte == 0,
+                (bool) -> bool ? (byte) 0 : (byte) 1
+        );
+
+        return Tag.Structure(key, serializer);
+    }
+
     public static <T extends Enum<T>> Tag<T> Enum(String key, Class<T> enumClass) {
         TagSerializer<T> serializer = new StandardGenerator<>(
             Tag.String(key),

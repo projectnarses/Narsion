@@ -15,12 +15,12 @@ import org.narses.narsion.dev.commands.ClassCommand;
 import org.narses.narsion.dev.commands.GamemodeCommand;
 import org.narses.narsion.dev.commands.ItemCommand;
 import org.narses.narsion.dev.player.DevPlayer;
-import org.narses.narsion.dev.events.Events;
+import org.narses.narsion.dev.events.DevEvents;
 import org.narses.narsion.dev.items.DevelopmentItemData;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.dev.region.RegionManager;
-import org.narses.narsion.dev.world.WorldDownloader;
 import org.narses.narsion.dev.world.blockhandlers.StaticBlocks;
+import org.narses.narsion.dev.world.npc.NarsionNPCs;
 
 import java.io.File;
 import java.util.*;
@@ -47,14 +47,16 @@ public class DevServer extends NarsionServer {
     private DevServer(final MinecraftServer server) {
         super(
                 server,
+                MinecraftServer.getGlobalEventHandler(),
                 new DevelopmentItemData(),
                 DevPlayer::new,
-                new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG))
+                new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG)),
+                List.of(NarsionNPCs.values())
         );
 
         // Try download world first
         try {
-            WorldDownloader.ensureLatestWorld(config);
+            // WorldDownloader.ensureLatestWorld(config);
         } catch (final Throwable e) {
             e.printStackTrace();
         }
@@ -64,8 +66,11 @@ public class DevServer extends NarsionServer {
         primaryInstance.setChunkGenerator(new DevelopmentChunkGenerator());
         // instanceContainer.setChunkLoader(new AnvilLoader("world"));
 
+        // Spawn all npcs
+        this.spawnNpcs(primaryInstance);
+
         // Register Events
-        new Events(this).registerAll(MinecraftServer.getGlobalEventHandler());
+        new DevEvents(this).registerAll(MinecraftServer.getGlobalEventHandler());
 
         // Register commands
         {

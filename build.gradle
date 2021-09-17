@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     // Minestom (new block api)
-    implementation 'com.github.Minestom:Minestom:-SNAPSHOT'
+    implementation 'com.github.Minestom:Minestom:e061c1e'
 
     // Entity library
     implementation 'com.github.projectnarses:NarsionEntities:0f426215bb'

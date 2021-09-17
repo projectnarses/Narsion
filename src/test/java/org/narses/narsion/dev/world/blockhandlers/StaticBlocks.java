@@ -37,7 +37,7 @@ public enum StaticBlocks {
         return new StaticBlock(namespace, tags);
     }
 
-    public String getNamespace() {
+    public @NotNull String getNamespace() {
         return namespace;
     }
 }
