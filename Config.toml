@@ -14,7 +14,6 @@
     SpawnX = 2997.5
     SpawnY = 67.0
     SpawnZ = -67.0
-    PasswordInput = ""
 
 [Debug]
     RegionBorders = false
