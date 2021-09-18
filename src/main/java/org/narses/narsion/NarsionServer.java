@@ -20,6 +20,7 @@ import org.narses.narsion.item.NarsionItemStackProvider;
 import org.narses.narsion.npc.NonPlayableCharacter;
 import org.narses.narsion.npc.NonPlayableCharacterSource;
 import org.narses.narsion.player.NarsionPlayer;
+import org.narses.narsion.social.SocialsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,7 @@ public abstract class NarsionServer {
     protected final @NotNull Collection<NonPlayableCharacterSource> nonPlayableCharacterSources;
     private final @NotNull PlayerInfoPacket npcAddInfoPacket;
     private final @NotNull PlayerInfoPacket npcHideInfoPacket;
+    private final @NotNull SocialsManager socialsManager;
 
     public NarsionServer(
             @NotNull MinecraftServer server,
@@ -77,6 +79,9 @@ public abstract class NarsionServer {
 
         // Register events
         new Events(this).registerAll(eventNode);
+
+        // Initialize socials
+        this.socialsManager = new SocialsManager(this);
 
         // Npc sources
         this.nonPlayableCharacterSources = nonPlayableCharacterSources;
@@ -116,6 +121,10 @@ public abstract class NarsionServer {
 
     public @NotNull Toml getConfig() {
         return config;
+    }
+
+    public @NotNull SocialsManager getSocialsManager() {
+        return socialsManager;
     }
 
     public @NotNull ItemStackProvider getItemStackProvider() {
