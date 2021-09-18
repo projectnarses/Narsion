@@ -1,5 +1,7 @@
 package org.narses.narsion.social;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
@@ -60,5 +62,17 @@ public class Guild implements PlayerGroup<Guild.GuildInfo> {
             long creationTime,
             @NotNull List<UUID> leaderHistory,
             @NotNull Map<UUID, SocialRank> members
-    ) { }
+    ) {
+        public @NotNull Component[] clean() {
+            return new Component[] {
+                    Component.text(name).color(NamedTextColor.AQUA),
+                    Component.text("    Creation Time: ").color(NamedTextColor.AQUA),
+                    Component.text(new Date(creationTime).toString()).color(NamedTextColor.YELLOW),
+                    Component.text("    Leader history: ").color(NamedTextColor.AQUA),
+                    Component.text(leaderHistory.toString()).color(NamedTextColor.YELLOW),
+                    Component.text("    Members: ").color(NamedTextColor.AQUA),
+                    Component.text(members.toString()).color(NamedTextColor.YELLOW)
+            };
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package org.narses.narsion.dev.commands;
 
+import kotlin.collections.ArraysKt;
+import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import static net.minestom.server.command.builder.arguments.ArgumentType.*;
@@ -26,12 +28,40 @@ public class GuildCommand extends Command {
         this.server = server;
         this.SOCIALS_MANAGER = server.getSocialsManager();
 
-        // /guild create exampleName
         this.addSubcommand(new CreateCommand());
 
-
+        this.addConditionalSyntax(
+                this::playerHasGuild,
+                this::usageInfo,
+                Literal("info")
+        );
     }
 
+    private boolean playerHasGuild(CommandSender sender, String str) {
+        if (!(sender instanceof Player player)) {
+            return false;
+        }
+
+        return SOCIALS_MANAGER.getGuildFromPlayer(player) != null;
+    }
+
+    // /guild info
+    private void usageInfo(CommandSender sender, CommandContext context) {
+        Player player = sender.asPlayer();
+
+        Guild guild = SOCIALS_MANAGER.getGuildFromPlayer(player);
+
+        if (guild == null) {
+            player.sendMessage("You have no guild."); // TODO: Move to config
+            return;
+        }
+
+        for (@NotNull Component component : guild.getInfo().clean()) {
+            player.sendMessage(component);
+        }
+    }
+
+    // /guild create exampleName
     private class CreateCommand extends Command {
         private CreateCommand() {
             super("create");
@@ -40,11 +70,7 @@ public class GuildCommand extends Command {
         }
 
         private boolean isAllowed(CommandSender sender, String str) {
-            if (!(sender instanceof Player player)) {
-                return false;
-            }
-
-            return SOCIALS_MANAGER.getGuildFromPlayer(player) == null;
+            return !playerHasGuild(sender, str);
         }
 
         private void usage(CommandSender sender, CommandContext context) {
@@ -53,7 +79,11 @@ public class GuildCommand extends Command {
 
             Guild guild = SOCIALS_MANAGER.createGuild(guildName, player);
 
-            player.sendMessage(guild.getInfo().toString());
+            for (Component component : guild.getInfo().clean()) {
+                player.sendMessage(component);
+            }
+
+            player.refreshCommands();
         }
     }
 

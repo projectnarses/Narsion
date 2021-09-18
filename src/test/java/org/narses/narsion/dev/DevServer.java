@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.classes.PlayerClasses;
 import org.narses.narsion.dev.commands.ClassCommand;
 import org.narses.narsion.dev.commands.GamemodeCommand;
+import org.narses.narsion.dev.commands.GuildCommand;
 import org.narses.narsion.dev.commands.ItemCommand;
 import org.narses.narsion.dev.player.DevPlayer;
 import org.narses.narsion.dev.events.DevEvents;
@@ -85,6 +86,7 @@ public class DevServer extends NarsionServer {
             manager.register(new ItemCommand(this));
             manager.register(new ClassCommand(this));
             manager.register(new GamemodeCommand(this));
+            manager.register(new GuildCommand(this));
         }
 
         // Register block handlers
