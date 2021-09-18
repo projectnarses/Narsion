@@ -16,10 +16,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class WorldDownloader {
@@ -43,12 +40,14 @@ public class WorldDownloader {
     public WorldDownloader(@NotNull DevServer server) {
         this.server = server;
         this.pass = "Fp63XC!ezq4P8b";
+    }
 
+    public CompletableFuture<?> updateWorldFiles() {
         System.out.println("Checking for new world version");
 
         if (!shouldDownload()) {
             System.out.println("Finished world updating");
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
         System.out.println("Connecting to world storage...");
@@ -57,28 +56,30 @@ public class WorldDownloader {
 
         if (channel == null) {
             System.out.println("Error updating world.");
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
-        new File(saveDir).mkdir();
-        try {
-            downloadFolder(downloadDir, channel);
-        } catch (SftpException e) {
-            e.printStackTrace();
-        }
+        return CompletableFuture.runAsync(() -> {
+            new File(saveDir).mkdir();
+            try {
+                downloadFolder(downloadDir, channel);
+            } catch (SftpException e) {
+                e.printStackTrace();
+            }
 
-        new File(downloadDir).delete();
-        this.numFilesDownloaded = new CountDownLatch(numFiles.intValue());
+            new File(downloadDir).delete();
+            this.numFilesDownloaded = new CountDownLatch(numFiles.intValue());
 
-        try {
-            numFilesDownloaded.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            try {
+                numFilesDownloaded.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        System.out.println("Finished world updating");
+            System.out.println("Finished world updating");
 
-        channel.exit();
+            channel.exit();
+        });
     }
 
 

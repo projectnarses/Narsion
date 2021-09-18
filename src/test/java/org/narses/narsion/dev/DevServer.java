@@ -26,6 +26,7 @@ import org.narses.narsion.dev.world.npc.NarsionNPCs;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A development flavour of the NarsionServer used for testing purposes
@@ -57,7 +58,11 @@ public class DevServer extends NarsionServer {
         );
 
         // Try download world first
-        new WorldDownloader(this);
+        try {
+            new WorldDownloader(this).updateWorldFiles().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
         // Start dev instance
         this.primaryInstance = MinecraftServer.getInstanceManager().createInstanceContainer();
