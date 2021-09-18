@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.world.narsionworlddata;
+package org.narses.narsion.dev.world.narsionworlddata.regions;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;

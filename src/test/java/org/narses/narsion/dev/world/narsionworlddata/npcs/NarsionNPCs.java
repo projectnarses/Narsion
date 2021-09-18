@@ -1,17 +1,14 @@
-package org.narses.narsion.dev.world.npc;
+package org.narses.narsion.dev.world.narsionworlddata.npcs;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.GameMode;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.network.packet.server.play.PlayerInfoPacket;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.npc.NonPlayableCharacter;
 import org.narses.narsion.npc.NonPlayableCharacterSource;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public enum NarsionNPCs implements NonPlayableCharacterSource {
     SHADY_MERCHANT(

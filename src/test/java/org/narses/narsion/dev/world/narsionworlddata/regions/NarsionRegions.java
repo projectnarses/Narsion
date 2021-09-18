@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.world.narsionworlddata;
+package org.narses.narsion.dev.world.narsionworlddata.regions;
 
 import dev.emortal.rayfast.area.area3d.Area3d;
 import net.minestom.server.entity.Player;

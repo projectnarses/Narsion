@@ -22,11 +22,10 @@ import org.narses.narsion.util.Pair;
 
 import java.util.*;
 
-public class RegionManager {
-
-    private final @NotNull NarsionServer server;
-
-    private final @NotNull Region[] regions;
+public record RegionManager(
+        @NotNull NarsionServer server,
+        @NotNull Region[] regions
+) {
 
     public RegionManager(@NotNull NarsionServer server, @NotNull Region[] regions) {
         this.server = server;

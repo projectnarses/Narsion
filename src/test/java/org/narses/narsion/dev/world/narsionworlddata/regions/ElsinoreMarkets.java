@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.world.narsionworlddata;
+package org.narses.narsion.dev.world.narsionworlddata.regions;
 
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
@@ -61,7 +61,7 @@ public class ElsinoreMarkets {
 
 		@Override
 		public @NotNull RegionType getType() {
-			return RegionType.MARKET;
+			return RegionType.RESOURCE_LAND;
 		}
 
 		@Override
@@ -115,7 +115,7 @@ public class ElsinoreMarkets {
 
 		@Override
 		public @NotNull RegionType getType() {
-			return RegionType.MARKET;
+			return RegionType.RESOURCE_LAND;
 		}
 
 		@Override

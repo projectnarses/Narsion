@@ -19,10 +19,10 @@ import org.narses.narsion.dev.events.DevEvents;
 import org.narses.narsion.dev.items.DevelopmentItemData;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.dev.world.WorldDownloader;
-import org.narses.narsion.dev.world.narsionworlddata.NarsionRegions;
+import org.narses.narsion.dev.world.narsionworlddata.regions.NarsionRegions;
 import org.narses.narsion.region.RegionManager;
 import org.narses.narsion.dev.world.blockhandlers.StaticBlocks;
-import org.narses.narsion.dev.world.npc.NarsionNPCs;
+import org.narses.narsion.dev.world.narsionworlddata.npcs.NarsionNPCs;
 
 import java.io.File;
 import java.util.*;
