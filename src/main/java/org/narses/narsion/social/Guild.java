@@ -3,13 +3,14 @@ package org.narses.narsion.social;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.social.PlayerGroup;
 
 import java.util.*;
 
-public class Guild implements PlayerGroup<Guild.GuildInfo> {
+public class Guild implements SocialGroup<Player, Guild.GuildInfo> {
 
     private final NarsionServer server;
     private final SocialsManager SOCIALS_MANAGER;
@@ -37,16 +38,6 @@ public class Guild implements PlayerGroup<Guild.GuildInfo> {
         return uuid;
     }
 
-    public boolean addPlayer(@NotNull UUID player) {
-        if (this.players.containsKey(player)) {
-            return false;
-        }
-
-        this.players.put(player, SocialRank.MEMBER);
-
-        return true;
-    }
-
     @Override
     public <T> @NotNull Collection<T> getPlayers(@NotNull PlayerFilter<T> filter) {
         return filter.uuidsFunction().apply(players.keySet());
@@ -55,6 +46,37 @@ public class Guild implements PlayerGroup<Guild.GuildInfo> {
     @Override
     public @NotNull Guild.GuildInfo getInfo() {
         return new GuildInfo(name, creationTime, List.of(leader), players);
+    }
+
+    @Override
+    public @Nullable SocialRank getRank(@NotNull UUID player) {
+        return this.players.get(player);
+    }
+
+    @ApiStatus.Internal
+    @Override
+    public boolean add(@NotNull UUID player) {
+        if (this.players.containsKey(player)) {
+            return false;
+        }
+        this.players.put(player, SocialRank.MEMBER);
+        return true;
+    }
+
+    @ApiStatus.Internal
+    @Override
+    public boolean remove(@NotNull UUID player) {
+        if (this.players.containsKey(player)) {
+            this.players.remove(player);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public @NotNull UUID uuidOf(@NotNull Player element) {
+        return element.getUuid();
     }
 
     public record GuildInfo(

@@ -1,12 +1,13 @@
 package org.narses.narsion.social;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.social.PlayerGroup;
 
 import java.util.*;
 
-class Nation implements PlayerGroup<Nation.NationInfo> {
+class Nation implements SocialGroup<Guild, Nation.NationInfo> {
 
     private final NarsionServer server;
     private final SocialsManager SOCIALS_MANAGER;
@@ -41,6 +42,29 @@ class Nation implements PlayerGroup<Nation.NationInfo> {
     @Override
     public @NotNull Nation.NationInfo getInfo() {
         return new NationInfo(name, creationTime, List.of(leader), guilds);
+    }
+
+    @Override
+    public @Nullable SocialRank getRank(@NotNull UUID guild) {
+        return guilds.get(SOCIALS_MANAGER.getGuildFromUuid(guild));
+    }
+
+    @ApiStatus.Internal
+    @Override
+    public boolean add(@NotNull UUID element) {
+        return false; // TODO: Add guilds to nations
+    }
+
+    @ApiStatus.Internal
+    @Override
+    public boolean remove(@NotNull UUID element) {
+        return false; // TODO: Remove guilds from nations
+    }
+
+    @ApiStatus.Internal
+    @Override
+    public @NotNull UUID uuidOf(@NotNull Guild element) {
+        return element.getUuid();
     }
 
     public record NationInfo(
