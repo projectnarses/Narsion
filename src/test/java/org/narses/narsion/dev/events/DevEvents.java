@@ -54,8 +54,6 @@ public class DevEvents {
     public void handlePlayerLoginEvent(PlayerLoginEvent event) {
         Player player = event.getPlayer();
 
-        player.getPlayerConnection().sendPacket(server.getNpcAddInfoPacket());
-
         event.setSpawningInstance(server.getPrimaryInstance());
         player.setRespawnPoint(respawnPoint);
         player.setPermissionLevel(4);
@@ -67,12 +65,6 @@ public class DevEvents {
         if (!event.isFirstSpawn()) {
             return;
         }
-
-        // Hide npcs from tablist
-        MinecraftServer.getSchedulerManager()
-                .buildTask(() -> player.getPlayerConnection().sendPacket(server.getNpcHideInfoPacket()))
-                .delay(20, TimeUnit.SERVER_TICK)
-                .schedule();
 
         player.setItemInMainHand(
                 server.getItemStackProvider()

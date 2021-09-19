@@ -11,10 +11,7 @@ import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.classes.PlayerClasses;
-import org.narses.narsion.dev.commands.ClassCommand;
-import org.narses.narsion.dev.commands.GamemodeCommand;
-import org.narses.narsion.dev.commands.GuildCommand;
-import org.narses.narsion.dev.commands.ItemCommand;
+import org.narses.narsion.dev.commands.*;
 import org.narses.narsion.dev.player.DevPlayer;
 import org.narses.narsion.dev.events.DevEvents;
 import org.narses.narsion.dev.items.DevelopmentItemData;
@@ -54,16 +51,17 @@ public class DevServer extends NarsionServer {
                 MinecraftServer.getGlobalEventHandler(),
                 new DevelopmentItemData(),
                 DevPlayer::new,
-                new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG)),
-                List.of(NarsionNPCs.values())
+                new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG))
         );
 
         // Try download world first
+
         try {
             new WorldDownloader(this).updateWorldFiles().get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
 
         // Start dev instance
         this.primaryInstance = MinecraftServer.getInstanceManager().createInstanceContainer();
@@ -74,7 +72,9 @@ public class DevServer extends NarsionServer {
         this.regionManager = new RegionManager(this, NarsionRegions.values());
 
         // Spawn all npcs
-        this.spawnNpcs(primaryInstance);
+        for (NarsionNPCs npc : NarsionNPCs.values()) {
+            npc.spawn(primaryInstance);
+        }
 
         // Register Events
         new DevEvents(this).registerAll(MinecraftServer.getGlobalEventHandler());
@@ -87,6 +87,7 @@ public class DevServer extends NarsionServer {
             manager.register(new ClassCommand(this));
             manager.register(new GamemodeCommand(this));
             manager.register(new GuildCommand(this));
+            manager.register(new DebugCommand(this));
         }
 
         // Register block handlers

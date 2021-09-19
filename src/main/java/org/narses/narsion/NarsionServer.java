@@ -7,9 +7,6 @@ import net.minestom.server.event.Event;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
-import net.minestom.server.event.player.PlayerLoginEvent;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.network.packet.server.play.PlayerInfoPacket;
 import org.itemize.ItemStackProvider;
 import org.itemize.data.ItemDataProvider;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +14,6 @@ import org.narses.narsion.classes.PlayerClasses;
 import org.narses.narsion.events.Events;
 import org.narses.narsion.item.NarsionItemDataProvider;
 import org.narses.narsion.item.NarsionItemStackProvider;
-import org.narses.narsion.npc.NonPlayableCharacter;
-import org.narses.narsion.npc.NonPlayableCharacterSource;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.social.SocialsManager;
 import org.slf4j.Logger;
@@ -47,9 +42,6 @@ public abstract class NarsionServer {
     protected final @NotNull ItemDataProvider itemDataProvider;
     protected final @NotNull Function<Player, ? extends NarsionPlayer> playerWrapperFunction;
     protected final @NotNull PlayerClasses playerClasses;
-    protected final @NotNull Collection<NonPlayableCharacterSource> nonPlayableCharacterSources;
-    private final @NotNull PlayerInfoPacket npcAddInfoPacket;
-    private final @NotNull PlayerInfoPacket npcHideInfoPacket;
     private final @NotNull SocialsManager socialsManager;
 
     public NarsionServer(
@@ -57,8 +49,7 @@ public abstract class NarsionServer {
             @NotNull EventNode<Event> eventNode,
             @NotNull NarsionItemDataProvider itemDataProvider,
             @NotNull BiFunction<NarsionServer, Player, ? extends NarsionPlayer> playerWrapperFunction,
-            @NotNull PlayerClasses playerClasses,
-            @NotNull Collection<NonPlayableCharacterSource> nonPlayableCharacterSources
+            @NotNull PlayerClasses playerClasses
     ) {
         // Item data + provider
         this.itemDataProvider = itemDataProvider;
@@ -83,9 +74,6 @@ public abstract class NarsionServer {
         // Initialize socials
         this.socialsManager = new SocialsManager(this);
 
-        // Npc sources
-        this.nonPlayableCharacterSources = nonPlayableCharacterSources;
-
         {
             // Remove player from player map on leave
             EventListener<PlayerDisconnectEvent> listener = EventListener.builder(PlayerDisconnectEvent.class)
@@ -93,29 +81,6 @@ public abstract class NarsionServer {
                     .handler(event -> playerNarsionPlayerMap.remove(event.getPlayer()))
                     .build();
             MinecraftServer.getGlobalEventHandler().addListener(listener);
-        }
-
-        // Collect npc info
-        {
-            List<PlayerInfoPacket.PlayerInfo> playerAddInfoList = nonPlayableCharacterSources.stream()
-                    .map(NonPlayableCharacterSource::generatePlayerAddInfo)
-                    .collect(Collectors.toList());
-
-            List<PlayerInfoPacket.PlayerInfo> playerHideInfoList = nonPlayableCharacterSources.stream()
-                    .map(NonPlayableCharacterSource::generatePlayerHideInfo)
-                    .collect(Collectors.toList());
-
-            // Create packets
-            {
-                PlayerInfoPacket packet = new PlayerInfoPacket(PlayerInfoPacket.Action.ADD_PLAYER);
-                packet.playerInfos = playerAddInfoList;
-                this.npcAddInfoPacket = packet;
-            }
-            {
-                PlayerInfoPacket packet = new PlayerInfoPacket(PlayerInfoPacket.Action.REMOVE_PLAYER);
-                packet.playerInfos = playerHideInfoList;
-                this.npcHideInfoPacket = packet;
-            }
         }
     }
 
@@ -139,16 +104,6 @@ public abstract class NarsionServer {
         return LOGGER;
     }
 
-    protected void spawnNpcs(@NotNull Instance instance) {
-        // Spawn all npcs & create player info packet
-        {
-            // Spawn all characters
-            List<NonPlayableCharacter> characters = nonPlayableCharacterSources.stream()
-                    .map(npc -> npc.spawn(instance))
-                    .toList();
-        }
-    }
-
     // Map to hold all NarsionPlayer instances
     private final Map<Player, NarsionPlayer> playerNarsionPlayerMap = Collections.synchronizedMap(new WeakHashMap<>());
 
@@ -167,12 +122,4 @@ public abstract class NarsionServer {
     public @NotNull PlayerClasses getPlayerClasses() {
         return playerClasses;
     };
-
-    public @NotNull PlayerInfoPacket getNpcAddInfoPacket() {
-        return npcAddInfoPacket;
-    }
-
-    public @NotNull PlayerInfoPacket getNpcHideInfoPacket() {
-        return npcHideInfoPacket;
-    }
 }

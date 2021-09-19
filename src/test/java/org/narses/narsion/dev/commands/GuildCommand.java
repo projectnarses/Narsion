@@ -30,7 +30,8 @@ public class GuildCommand extends Command {
         this.addConditionalSyntax(
                 this::playerHasNoGuild,
                 this::usageCreate,
-                Literal("create")
+                Literal("create"),
+                Word("name")
         );
 
         this.addSyntax(
