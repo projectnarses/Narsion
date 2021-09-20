@@ -15,21 +15,21 @@ import java.util.UUID;
 
 public enum NarsionNPCs {
     SHADY_MERCHANT(
-            NonPlayableCharacter::new,
+            ShadyMerchant::new,
             Component.text("Shady Merchant"),
             new Pos(2934.54, 73.00, -84.48, -770.89F, 12.15F),
             Component.text("Hey kid, wanna buy a watch?"),
             Component.text("You're new around here. Watch your back or get attack.")
     ),
     FRIENDLY_MERCHANT(
-            NonPlayableCharacter::new,
+            FriendlyMerchant::new,
             Component.text("Friendly Merchant"),
             new Pos(2933.54, 71.00, -62.51, -461.63F, 8.13F),
             Component.text("Doing well I see. Feel free to look around."),
             Component.text("Elsinore is where all the great conquerors began. It's the birthplace of kings.")
     ),
     VETERAN_MERCHANT(
-            NonPlayableCharacter::new,
+            VeteranMerchant::new,
             Component.text("Veteran Merchant"),
             new Pos(2930.56, 69.00, -46.53, -496.53F, 1.03F),
             Component.text("Grgghmpg Kids these days.. hmghmr I remember steak pvp. The golden ages."),

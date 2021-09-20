@@ -14,7 +14,6 @@ import org.narses.narsion.classes.PlayerClasses;
 import org.narses.narsion.dev.commands.*;
 import org.narses.narsion.dev.player.DevPlayer;
 import org.narses.narsion.dev.events.DevEvents;
-import org.narses.narsion.dev.items.DevelopmentItemData;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.dev.world.WorldDownloader;
 import org.narses.narsion.dev.world.narsionworlddata.regions.NarsionRegions;
@@ -49,7 +48,6 @@ public class DevServer extends NarsionServer {
         super(
                 server,
                 MinecraftServer.getGlobalEventHandler(),
-                new DevelopmentItemData(),
                 DevPlayer::new,
                 new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG))
         );

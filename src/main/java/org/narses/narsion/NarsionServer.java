@@ -14,6 +14,7 @@ import org.narses.narsion.classes.PlayerClasses;
 import org.narses.narsion.events.Events;
 import org.narses.narsion.item.NarsionItemDataProvider;
 import org.narses.narsion.item.NarsionItemStackProvider;
+import org.narses.narsion.item.data.NarsionItems;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.social.SocialsManager;
 import org.slf4j.Logger;
@@ -21,11 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * The entrypoint of the NarsionServer
@@ -47,13 +45,13 @@ public abstract class NarsionServer {
     public NarsionServer(
             @NotNull MinecraftServer server,
             @NotNull EventNode<Event> eventNode,
-            @NotNull NarsionItemDataProvider itemDataProvider,
             @NotNull BiFunction<NarsionServer, Player, ? extends NarsionPlayer> playerWrapperFunction,
             @NotNull PlayerClasses playerClasses
     ) {
         // Item data + provider
-        this.itemDataProvider = itemDataProvider;
-        this.itemStackProvider = new NarsionItemStackProvider(itemDataProvider);
+        final NarsionItemDataProvider narsionItemDataProvider = new NarsionItems();
+        this.itemDataProvider = narsionItemDataProvider;
+        this.itemStackProvider = new NarsionItemStackProvider(narsionItemDataProvider);
 
         // Player wrapper function wrapper (one too many wrappers)
         this.playerWrapperFunction = (player) -> {

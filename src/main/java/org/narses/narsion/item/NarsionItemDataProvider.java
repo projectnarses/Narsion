@@ -26,5 +26,5 @@ public abstract class NarsionItemDataProvider implements ItemDataProvider {
         return itemDataMap.get(ID);
     }
 
-    public abstract void prepare(@NotNull String ID, @NotNull ItemStackBuilder builder);
+    public abstract void prepare(@NotNull ItemData data, @NotNull ItemStackBuilder builder);
 }

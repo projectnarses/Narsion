@@ -1,5 +1,6 @@
 package org.narses.narsion.item;
 
+import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.ItemStackBuilder;
 import org.itemize.ItemStackProvider;
 import org.itemize.data.ItemData;
@@ -17,9 +18,8 @@ public class NarsionItemStackProvider extends ItemStackProvider {
     }
 
     @Override
-    protected void prepare(ItemStackBuilder builder, String ID, ItemData itemData, UUID origin) {
-        super.prepare(builder, ID, itemData, origin);
-
-        narsionItemDataProvider.prepare(ID, builder);
+    protected void prepare(ItemStackBuilder builder, ItemData itemData, UUID origin) {
+        super.prepare(builder, itemData, origin);
+        narsionItemDataProvider.prepare(itemData, builder);
     }
 }

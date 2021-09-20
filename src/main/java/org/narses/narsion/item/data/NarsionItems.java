@@ -1,4 +1,4 @@
-package org.narses.narsion.dev.items;
+package org.narses.narsion.item.data;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -25,15 +25,19 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-public class DevelopmentItemData extends NarsionItemDataProvider {
+/**
+ * How to add a new item:
+ * Add an entry to {@link ItemsEnum}, and it's id to the ease of use item ids
+ */
+public class NarsionItems extends NarsionItemDataProvider {
 
-    public DevelopmentItemData() {
+    public NarsionItems() {
         super(
-            Arrays.stream(DevelopmentItems.values())
+            Arrays.stream(ItemsEnum.values())
                 .collect(
                     Collectors.toMap(
                         Enum::name,
-                        DevelopmentItems::get
+                        ItemsEnum::get
                     )
                 )
         );
@@ -41,22 +45,40 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
     }
 
     @Override
-    public void prepare(@NotNull String ID, @NotNull ItemStackBuilder builder) {
-        builder.meta(DevelopmentItems.valueOf(ID));
+    public void prepare(@NotNull ItemData data, @NotNull ItemStackBuilder builder) {
+        builder.meta(ItemsEnum.valueOf(data.ID()));
     }
 
     // An item rarity only used during development
     // TODO: Remove this item rarity
     private static final ItemRarity developmentRarity = new ItemRarity(Component.text("Development"), new NBTCompound());
 
-    private enum DevelopmentItems implements Supplier<ItemData>, UnaryOperator<ItemMetaBuilder> {
+    // Item ids for ease of use.
+    public static final String ADVENTURING = "ADVENTURING";
+    public static final String BEGINNING = "BEGINNING";
+    public static final String CONQUERING = "CONQUERING";
+    public static final String QUESTING = "QUESTING";
+    public static final String SHIELD_DOT_EXE = "SHIELD_DOT_EXE";
+    public static final String THE_END = "THE_END";
+    public static final String THE_HOLY_BIBLE = "THE_HOLY_BIBLE";
+    public static final String TRAINING = "TRAINING";
+    public static final String COAL = "COAL";
+    public static final String COPPER = "COPPER";
+    public static final String COW_LEATHER = "COW_LEATHER";
+    public static final String GOLD = "GOLD";
+    public static final String GOLDEN_CLOTH = "GOLDEN_CLOTH";
+    public static final String IRON = "IRON";
+    public static final String NETHERITE = "NETHERITE";
+    public static final String STEEL = "STEEL";
+
+    private enum ItemsEnum implements Supplier<ItemData>, UnaryOperator<ItemMetaBuilder> {
         ADVENTURING(
                 Material.STONE_SWORD,
                 Component.text("Adventuring"),
                 0,
                 developmentRarity,
                 new String[] {
-                        "Adventures themselves can the best of friends"
+                        "Adventures themselves can be the best of friends"
                 },
                 new ItemTypeData.WEAPON(
                         Archetype.FIGHTER,
@@ -342,7 +364,7 @@ public class DevelopmentItemData extends NarsionItemDataProvider {
         private final ItemData itemData;
         private final ItemTypeData itemTypeData;
 
-        DevelopmentItems(
+        ItemsEnum(
                 @NotNull Material display,
                 Component displayName,
                 int cmd,

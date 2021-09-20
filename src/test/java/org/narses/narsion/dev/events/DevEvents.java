@@ -9,10 +9,14 @@ import net.minestom.server.event.EventNode;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.event.trait.CancellableEvent;
+import net.minestom.server.inventory.Inventory;
+import net.minestom.server.network.packet.client.ClientPacket;
+import net.minestom.server.network.packet.client.play.ClientSelectTradePacket;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.classes.abilities.Ability;
 import org.narses.narsion.dev.DevServer;
+import org.narses.narsion.dev.inventory.MerchantInventory;
 import org.narses.narsion.dev.player.DevPlayer;
 import org.narses.narsion.dev.world.narsionworlddata.quests.NarsionQuests;
 import org.narses.narsion.region.Region;
@@ -43,6 +47,7 @@ public class DevEvents {
     public void registerAll(@NotNull EventNode<Event> eventNode) {
         eventNode.addListener(PlayerLoginEvent.class, this::handlePlayerLoginEvent);
         eventNode.addListener(PlayerSpawnEvent.class, this::handlePlayerSpawnEvent);
+        eventNode.addListener(PlayerPacketEvent.class, this::handlePlayerPacketEvent);
         eventNode.addListener(ItemDropEvent.class, this::handleItemDropEvent);
         eventNode.addListener(PlayerSwapItemEvent.class, this::handlePlayerSwapItemEvent);
         eventNode.addListener(PlayerChangeHeldSlotEvent.class, this::handlePlayerChangeHeldSlotEvent);
@@ -66,20 +71,24 @@ public class DevEvents {
             return;
         }
 
-        player.setItemInMainHand(
-                server.getItemStackProvider()
-                        .create(
-                                "THE_END",
-                                new UUID(0, 0),
-                                null
-                        )
-        );
-
         for (final Region region : NarsionRegions.values()) {
             region.addViewer(player);
         }
 
         NarsionQuests.EXAMPLE.embark(server, player);
+    }
+
+    public void handlePlayerPacketEvent(PlayerPacketEvent event) {
+        Player player = event.getPlayer();
+        ClientPacket packet = event.getPacket();
+
+        if (packet instanceof ClientSelectTradePacket tradePacket) {
+            Inventory inventory = player.getOpenInventory();
+
+            if (inventory instanceof MerchantInventory merchantInventory) {
+                merchantInventory.handleSlotSelect(player, tradePacket.selectedSlot);
+            }
+        }
     }
 
     public void handleItemDropEvent(ItemDropEvent event) {

@@ -24,7 +24,7 @@ dependencies {
     implementation 'com.github.projectnarses:NarsionEntities:0f426215bb'
 
     // Item library
-    implementation 'com.github.KrystilizeNevaDies:Itemize:e8fbd1a880'
+    implementation 'com.github.KrystilizeNevaDies:Itemize:86558ef650'
 
     // Toml config library
     implementation 'com.github.mwanji:toml4j:4d206e4af6'

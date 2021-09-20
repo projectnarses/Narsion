@@ -3,12 +3,16 @@ package org.narses.narsion.events;
 import com.moandjiezana.toml.Toml;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
+import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
+import net.minestom.server.event.inventory.InventoryClickEvent;
+import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.*;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
+import org.narses.narsion.item.ClickableInventory;
 import org.narses.narsion.npc.NonPlayableCharacter;
 
 public class Events {
@@ -21,6 +25,8 @@ public class Events {
 
     public void registerAll(@NotNull EventNode<Event> eventNode) {
         eventNode.addListener(PlayerEntityInteractEvent.class, this::handlePlayerEntityInteractEvent);
+        eventNode.addListener(InventoryPreClickEvent.class, this::handleInventoryPreClickEvent);
+        eventNode.addListener(InventoryClickEvent.class, this::handleInventoryClickEvent);
     }
 
     private void handlePlayerEntityInteractEvent(PlayerEntityInteractEvent event) {
@@ -31,5 +37,17 @@ public class Events {
         }
 
         npc.onInteract(server, event);
+    }
+
+    private void handleInventoryPreClickEvent(InventoryPreClickEvent event) {
+        if (event.getInventory() instanceof ClickableInventory inventory) {
+            inventory.preClickEvent(event);
+        }
+    }
+
+    private void handleInventoryClickEvent(InventoryClickEvent event) {
+        if (event.getInventory() instanceof ClickableInventory inventory) {
+            inventory.clickEvent(event);
+        }
     }
 }
