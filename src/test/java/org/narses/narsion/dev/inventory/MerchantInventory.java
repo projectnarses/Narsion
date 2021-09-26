@@ -1,5 +1,7 @@
 package org.narses.narsion.dev.inventory;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,13 +18,14 @@ import net.minestom.server.item.ItemStackBuilder;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.BundleMeta;
 import net.minestom.server.network.packet.server.play.TradeListPacket;
-import org.itemize.data.ItemData;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.item.ClickableInventory;
 import org.narses.narsion.util.InventoryUtils;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class MerchantInventory extends Inventory implements ClickableInventory {
 
@@ -50,24 +53,9 @@ public class MerchantInventory extends Inventory implements ClickableInventory {
         packet.regularVillager = true;
         packet.villagerLevel = 1;
 
-        List<TradeListPacket.Trade> convertedTrades = new ArrayList<>();
-
-        for (Trade trade : trades) {
-            TradeListPacket.Trade convertedTrade = new TradeListPacket.Trade();
-
-            convertedTrade.inputItem1 = generateBundle(trade.ingredients.values()).withDisplayName(INGREDIENTS_DISPLAY_NAME);
-            convertedTrade.result = generateBundle(trade.result.values()).withDisplayName(RESULT_DISPLAY_NAME);
-            convertedTrade.tradeDisabled = false;
-            convertedTrade.exp = 0;
-            convertedTrade.maxTradeUsesNumber = Integer.MAX_VALUE;
-            convertedTrade.priceMultiplier = 0.0F;
-            convertedTrade.specialPrice = 0;
-            convertedTrade.demand = 0;
-
-            convertedTrades.add(convertedTrade);
-        }
-
-        packet.trades = convertedTrades.toArray(TradeListPacket.Trade[]::new);
+        packet.trades = Arrays.stream(trades)
+                .map((trade) -> trade.apply(server))
+                .toArray(TradeListPacket.Trade[]::new);
 
         this.TRADE_LIST_PACKET = packet;
     }
@@ -77,16 +65,29 @@ public class MerchantInventory extends Inventory implements ClickableInventory {
         return super.leftClick(player, slot);
     }
 
-    private @NotNull ItemStack generateBundle(@NotNull Collection<ItemStack> items) {
+    private static @NotNull ItemStack generateBundle(@NotNull NarsionServer server, @NotNull Object2IntMap<String> items) {
         ItemStackBuilder builder = ItemStack.builder(Material.BUNDLE);
 
         final List<Component> lore = new ArrayList<>();
         lore.add(Component.text("Items: ").color(NamedTextColor.AQUA));
 
-        for (ItemStack item : items) {
-            builder.meta(BundleMeta.class, meta -> meta.addItem(item));
+        // Generate display items
+        for (Object2IntMap.Entry<String> item : items.object2IntEntrySet()) {
+            String itemID = item.getKey();
+            int itemAmount = item.getIntValue();
 
-            lore.add(Component.text("    " + item.getAmount() + "x ").append(item.getDisplayName()));
+            // Generate item
+            ItemStack itemStack = server.getItemStackProvider()
+                    .create(
+                            itemID,
+                            server.getOriginProvider().DISPLAY("inventory:merchant"),
+                            null
+                    )
+                    .withAmount(itemAmount);
+
+            builder.meta(BundleMeta.class, meta -> meta.addItem(itemStack));
+
+            lore.add(Component.text("    " + itemAmount + "x ").append(itemStack.getDisplayName()));
         }
 
         builder.lore(lore.toArray(Component[]::new));
@@ -111,12 +112,12 @@ public class MerchantInventory extends Inventory implements ClickableInventory {
 
         this.setItemStack(
                 SELECTED_INGREDIENT,
-                generateBundle(trade.ingredients.values())
+                generateBundle(server, trade.ingredients)
                         .withDisplayName(INGREDIENTS_DISPLAY_NAME)
         );
         this.setItemStack(
                 SELECTED_RESULT,
-                generateBundle(trade.result.values())
+                generateBundle(server, trade.result)
                         .withDisplayName(RESULT_DISPLAY_NAME)
         );
         // this.setItemStack(CONFIRMATION_BUTTON, trade.recipeDisplay);
@@ -139,7 +140,7 @@ public class MerchantInventory extends Inventory implements ClickableInventory {
                     return;
                 }
 
-                if (!InventoryUtils.containsItems(inventory, selectedTrade.ingredients.values())) {
+                if (!InventoryUtils.containsItems(inventory, selectedTrade.ingredients)) {
                     player.sendMessage("You do not have the materials.");
                     return;
                 }
@@ -147,21 +148,39 @@ public class MerchantInventory extends Inventory implements ClickableInventory {
                 player.sendMessage("You have the materials!");
 
                 // Remove items from inventory
-                InventoryUtils.removeItems(inventory, selectedTrade.ingredients.values());
+                InventoryUtils.removeItems(inventory, selectedTrade.ingredients);
 
                 // Give result
-                // Check if result can be added to inventory
-                for (ItemStack item : selectedTrade.result.values()) {
-                    if (inventory.addItemStack(item, TransactionOption.DRY_RUN)) {
-                        inventory.addItemStack(item);
-                    } else {
-                        // TODO: Figure out what to do when the result does not fit.
-                        player.sendMessage(
-                                Component.text("The item: ")
-                                        .append(Objects.requireNonNullElse(item.getDisplayName(), Component.text(item.getMaterial().name())))
-                                        .append(Component.text(" could not be added to your inventory."))
-                        );
+                for (Object2IntMap.Entry<String> item : selectedTrade.result.object2IntEntrySet()) {
+                    String itemID = item.getKey();
+                    int itemAmount = item.getIntValue();
+
+                    // Generate item
+                    ItemStack itemStack = server.getItemStackProvider()
+                            .create(
+                                    itemID,
+                                    server.getOriginProvider().TRADE(
+                                            "inventory:merchant",
+                                            selectedTrade.ingredients.toString(),
+                                            selectedTrade.result.toString()
+                                    ),
+                                    null
+                            )
+                            .withAmount(itemAmount);
+
+
+                    // Check if result can be added to inventory
+                    if (inventory.addItemStack(itemStack, TransactionOption.DRY_RUN)) {
+                        inventory.addItemStack(itemStack);
+                        continue;
                     }
+
+                    // TODO: Figure out what to do when the result does not fit.
+                    player.sendMessage(
+                            Component.text("The item: ")
+                                    .append(Objects.requireNonNullElse(itemStack.getDisplayName(), Component.text(itemStack.getMaterial().name())))
+                                    .append(Component.text(" could not be added to your inventory."))
+                    );
                 }
             }
         }
@@ -171,46 +190,24 @@ public class MerchantInventory extends Inventory implements ClickableInventory {
     public void clickEvent(@NotNull InventoryClickEvent event) {
     }
 
-    public static class Trade {
+    public record Trade(
+            @NotNull Object2IntMap<String> ingredients,
+            @NotNull Object2IntMap<String> result
+    ) implements Function<NarsionServer, TradeListPacket.Trade> {
+        @Override
+        public TradeListPacket.Trade apply(@NotNull NarsionServer server) {
+            TradeListPacket.Trade trade = new TradeListPacket.Trade();
 
-        private final @NotNull Map<String, ItemStack> ingredients;
-        private final @NotNull Map<String, ItemStack> result;
+            trade.inputItem1 = generateBundle(server, ingredients).withDisplayName(INGREDIENTS_DISPLAY_NAME);
+            trade.result = generateBundle(server, result).withDisplayName(RESULT_DISPLAY_NAME);
+            trade.tradeDisabled = false;
+            trade.exp = 0;
+            trade.maxTradeUsesNumber = Integer.MAX_VALUE;
+            trade.priceMultiplier = 0.0F;
+            trade.specialPrice = 0;
+            trade.demand = 0;
 
-        public Trade(
-                @NotNull NarsionServer server,
-                @NotNull Map<String, Integer> ingredients,
-                @NotNull Map<String, Integer> result
-        ) {
-            this.ingredients = new HashMap<>();
-            this.result = new HashMap<>();
-
-            ingredients.forEach((id, amount) -> {
-                ItemData itemData = server.getItemDataProvider().get(id);
-
-                if (itemData == null) {
-                    return;
-                }
-
-                this.ingredients.put(itemData.ID(), server.getItemStackProvider().create(
-                        itemData,
-                        new UUID(0, 0), // TODO: Proper item origin
-                        null
-                ).withAmount(amount));
-            });
-
-            result.forEach((id, amount) -> {
-                ItemData itemData = server.getItemDataProvider().get(id);
-
-                if (itemData == null) {
-                    return;
-                }
-
-                this.result.put(itemData.ID(), server.getItemStackProvider().create(
-                        itemData,
-                        new UUID(0, 0), // TODO: Proper item origin
-                        null
-                ));
-            });
+            return trade;
         }
     }
 }

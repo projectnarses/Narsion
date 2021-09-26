@@ -19,20 +19,17 @@ public class InventoryUtils {
      * Returns true if all the specified items are found in the inventory. This takes item amounts into account.
      * @return true if all the item amounts are in the inventory, false otherwise.
      */
-    public static boolean containsItems(@NotNull AbstractInventory inventory, @NotNull Collection<ItemStack> items) {
+    public static boolean containsItems(@NotNull AbstractInventory inventory, @NotNull Object2IntMap<String> itemAmounts) {
         Object2IntMap<String> inventoryItemAmounts = countItems(inventory.getItemStacks());
-        Object2IntMap<String> itemAmounts = countItems(items);
 
-
-        for (ItemStack item : items) {
-            final String itemID = item.getTag(ItemData.TAG_ID);
+        for (Object2IntMap.Entry<String> item : itemAmounts.object2IntEntrySet()) {
+            final String itemID = item.getKey();
 
             if (itemID == null) {
                 continue;
             }
 
             inventoryItemAmounts.putIfAbsent(itemID, 0);
-            itemAmounts.putIfAbsent(itemID, 0);
             if (inventoryItemAmounts.getInt(itemID) < itemAmounts.getInt(itemID)) {
                 return false;
             }
@@ -41,11 +38,11 @@ public class InventoryUtils {
         return true;
     }
 
-    public static boolean removeItems(@NotNull AbstractInventory inventory, @NotNull Collection<ItemStack> itemsToRemove) {
+    public static boolean removeItems(@NotNull AbstractInventory inventory, @NotNull Object2IntMap<String> itemsToRemove) {
         boolean complete = true;
 
-        for (ItemStack item : itemsToRemove) {
-            int amountLeft = item.getAmount();
+        for (Object2IntMap.Entry<String> item : itemsToRemove.object2IntEntrySet()) {
+            int amountLeft = item.getIntValue();
             ItemStack[] items = inventory.getItemStacks();
 
             // For each item in inventory
@@ -57,7 +54,7 @@ public class InventoryUtils {
                 ItemStack itemStack = items[i];
 
                 // If item has same id
-                if (!InventoryUtils.isSimilar(item, itemStack)) {
+                if (!item.getKey().equals(itemStack.getTag(ItemData.TAG_ID))) {
                     continue;
                 }
 

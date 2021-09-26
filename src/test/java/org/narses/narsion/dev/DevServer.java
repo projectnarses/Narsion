@@ -17,6 +17,7 @@ import org.narses.narsion.dev.events.DevEvents;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.dev.world.WorldDownloader;
 import org.narses.narsion.dev.world.narsionworlddata.regions.NarsionRegions;
+import org.narses.narsion.origin.OriginProvider;
 import org.narses.narsion.region.RegionManager;
 import org.narses.narsion.dev.world.blockhandlers.StaticBlocks;
 import org.narses.narsion.dev.world.narsionworlddata.npcs.NarsionNPCs;
@@ -49,16 +50,18 @@ public class DevServer extends NarsionServer {
                 server,
                 MinecraftServer.getGlobalEventHandler(),
                 DevPlayer::new,
-                new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG))
+                new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG)),
+                OriginProvider::new
         );
 
         // Try download world first
-
+        /*
         try {
             new WorldDownloader(this).updateWorldFiles().get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+        */
 
 
         // Start dev instance

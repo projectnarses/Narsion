@@ -15,6 +15,7 @@ import org.narses.narsion.events.Events;
 import org.narses.narsion.item.NarsionItemDataProvider;
 import org.narses.narsion.item.NarsionItemStackProvider;
 import org.narses.narsion.item.data.NarsionItems;
+import org.narses.narsion.origin.OriginProvider;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.social.SocialsManager;
 import org.slf4j.Logger;
@@ -35,23 +36,31 @@ public abstract class NarsionServer {
 
     private static final File configFile = new File("Config.toml");
 
-    protected final @NotNull Toml config = new Toml().read(configFile);
+    protected final @NotNull Toml config;
     protected final @NotNull ItemStackProvider itemStackProvider;
     protected final @NotNull ItemDataProvider itemDataProvider;
     protected final @NotNull Function<Player, ? extends NarsionPlayer> playerWrapperFunction;
     protected final @NotNull PlayerClasses playerClasses;
-    private final @NotNull SocialsManager socialsManager;
+    protected final @NotNull OriginProvider originProvider;
+    protected final @NotNull SocialsManager socialsManager;
 
     public NarsionServer(
-            @NotNull MinecraftServer server,
+            @NotNull MinecraftServer minecraftServer,
             @NotNull EventNode<Event> eventNode,
             @NotNull BiFunction<NarsionServer, Player, ? extends NarsionPlayer> playerWrapperFunction,
-            @NotNull PlayerClasses playerClasses
+            @NotNull PlayerClasses playerClasses,
+            @NotNull Function<NarsionServer, OriginProvider> originProviderFunction
     ) {
+        // First and foremost, read config.
+        this.config = new Toml().read(configFile);
+
         // Item data + provider
         final NarsionItemDataProvider narsionItemDataProvider = new NarsionItems();
         this.itemDataProvider = narsionItemDataProvider;
         this.itemStackProvider = new NarsionItemStackProvider(narsionItemDataProvider);
+
+        // Origin provider
+        this.originProvider = originProviderFunction.apply(this);
 
         // Player wrapper function wrapper (one too many wrappers)
         this.playerWrapperFunction = (player) -> {
@@ -119,5 +128,9 @@ public abstract class NarsionServer {
 
     public @NotNull PlayerClasses getPlayerClasses() {
         return playerClasses;
+    };
+
+    public @NotNull OriginProvider getOriginProvider() {
+        return originProvider;
     };
 }
