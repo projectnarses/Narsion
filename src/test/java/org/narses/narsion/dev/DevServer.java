@@ -55,14 +55,11 @@ public class DevServer extends NarsionServer {
         );
 
         // Try download world first
-        /*
         try {
             new WorldDownloader(this).updateWorldFiles().get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        */
-
 
         // Start dev instance
         this.primaryInstance = MinecraftServer.getInstanceManager().createInstanceContainer();

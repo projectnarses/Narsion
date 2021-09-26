@@ -1,7 +1,6 @@
 package org.narses.narsion.dev.events;
 
 import com.moandjiezana.toml.Toml;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
@@ -12,11 +11,10 @@ import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.network.packet.client.ClientPacket;
 import net.minestom.server.network.packet.client.play.ClientSelectTradePacket;
-import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.classes.abilities.Ability;
 import org.narses.narsion.dev.DevServer;
-import org.narses.narsion.dev.inventory.MerchantInventory;
+import org.narses.narsion.inventory.TradeInventory;
 import org.narses.narsion.dev.player.DevPlayer;
 import org.narses.narsion.dev.world.narsionworlddata.quests.NarsionQuests;
 import org.narses.narsion.region.Region;
@@ -24,7 +22,6 @@ import org.narses.narsion.dev.world.narsionworlddata.regions.NarsionRegions;
 import org.narses.narsion.player.NarsionPlayer;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class DevEvents {
 
@@ -85,8 +82,8 @@ public class DevEvents {
         if (packet instanceof ClientSelectTradePacket tradePacket) {
             Inventory inventory = player.getOpenInventory();
 
-            if (inventory instanceof MerchantInventory merchantInventory) {
-                merchantInventory.handleSlotSelect(player, tradePacket.selectedSlot);
+            if (inventory instanceof TradeInventory tradeInventory) {
+                tradeInventory.handleSlotSelect(player, tradePacket.selectedSlot);
             }
         }
     }

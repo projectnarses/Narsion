@@ -5,7 +5,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.minestom.server.coordinate.Pos;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.dev.inventory.MerchantInventory;
+import org.narses.narsion.inventory.TradeInventory;
 import org.narses.narsion.item.data.NarsionItems;
 
 import java.util.Map;
@@ -13,8 +13,8 @@ import java.util.UUID;
 
 class VeteranMerchant extends MerchantNpc {
 
-    private final MerchantInventory.Trade[] trades = {
-            new MerchantInventory.Trade(
+    private final TradeInventory.Trade[] trades = {
+            new TradeInventory.Trade(
                     new Object2IntOpenHashMap<>(Map.of(
                             NarsionItems.ADVENTURING, 3,
                             NarsionItems.GOLD, 3
@@ -23,7 +23,7 @@ class VeteranMerchant extends MerchantNpc {
                             NarsionItems.TRAINING, 1
                     ))
             ),
-            new MerchantInventory.Trade(
+            new TradeInventory.Trade(
                     new Object2IntOpenHashMap<>(Map.of(
                             NarsionItems.STEEL, 3,
                             NarsionItems.COPPER, 3
@@ -39,7 +39,7 @@ class VeteranMerchant extends MerchantNpc {
     }
 
     @Override
-    protected MerchantInventory.Trade[] getTrades(@NotNull NarsionServer server) {
+    protected TradeInventory.Trade[] getTrades(@NotNull NarsionServer server) {
         return trades;
     }
 }

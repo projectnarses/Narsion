@@ -1,11 +1,11 @@
-package org.narses.narsion.dev.inventory;
+package org.narses.narsion.inventory;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.event.inventory.InventoryClickEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.inventory.Inventory;
@@ -20,14 +20,14 @@ import net.minestom.server.item.metadata.BundleMeta;
 import net.minestom.server.network.packet.server.play.TradeListPacket;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
+import org.narses.narsion.events.PlayerTradeInventoryTradeEvent;
 import org.narses.narsion.item.ClickableInventory;
 import org.narses.narsion.util.InventoryUtils;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-public class MerchantInventory extends Inventory implements ClickableInventory {
+public class TradeInventory extends Inventory implements ClickableInventory {
 
     private static final @NotNull TextComponent INGREDIENTS_DISPLAY_NAME = Component.text("Ingredients");
     private static final @NotNull TextComponent RESULT_DISPLAY_NAME = Component.text("Result");
@@ -40,7 +40,7 @@ public class MerchantInventory extends Inventory implements ClickableInventory {
     private final Trade[] trades;
     private Trade selectedTrade;
 
-    public MerchantInventory(@NotNull NarsionServer server, @NotNull Trade... trades) {
+    public TradeInventory(@NotNull NarsionServer server, @NotNull Trade... trades) {
         super(InventoryType.MERCHANT, Component.text("test"));
         this.server = server;
         this.trades = trades;
@@ -149,6 +149,9 @@ public class MerchantInventory extends Inventory implements ClickableInventory {
 
                 // Remove items from inventory
                 InventoryUtils.removeItems(inventory, selectedTrade.ingredients);
+
+                // Call event
+                EventDispatcher.call(new PlayerTradeInventoryTradeEvent(player, this, selectedTrade));
 
                 // Give result
                 for (Object2IntMap.Entry<String> item : selectedTrade.result.object2IntEntrySet()) {

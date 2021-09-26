@@ -1,24 +1,14 @@
 package org.narses.narsion.dev.commands;
 
 import kotlin.random.Random;
-import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.Suggestion;
-import net.minestom.server.command.builder.suggestion.SuggestionEntry;
-import net.minestom.server.inventory.Inventory;
-import net.minestom.server.inventory.InventoryType;
-import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.dev.DevServer;
-import org.narses.narsion.dev.inventory.MerchantInventory;
-import org.narses.narsion.item.data.NarsionItems;
-
-import java.util.Map;
-import java.util.UUID;
 
 public class DebugCommand extends Command {
 

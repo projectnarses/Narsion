@@ -61,6 +61,7 @@ public interface Quest {
 
     void complete(final @NotNull NarsionServer server, final @NotNull Player player);
 
+    @FunctionalInterface
     public interface QuestStep {
         void setup(final @NotNull NarsionServer server, final @NotNull Player player, final @NotNull Runnable nextStep);
     }
