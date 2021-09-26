@@ -1,6 +1,7 @@
 package org.narses.narsion.dev.events;
 
 import com.moandjiezana.toml.Toml;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
@@ -14,6 +15,8 @@ import net.minestom.server.network.packet.client.play.ClientSelectTradePacket;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.classes.abilities.Ability;
 import org.narses.narsion.dev.DevServer;
+import org.narses.narsion.events.PlayerAbilityEvent;
+import org.narses.narsion.events.PlayerSwitchAbilityEvent;
 import org.narses.narsion.inventory.TradeInventory;
 import org.narses.narsion.dev.player.DevPlayer;
 import org.narses.narsion.dev.world.narsionworlddata.quests.NarsionQuests;
@@ -100,6 +103,8 @@ public class DevEvents {
         // scroll to the left of abilities
         DevPlayer devPlayer = server.wrap(player);
         devPlayer.setAbilitySlot((byte) (devPlayer.getAbilitySlot() - 1));
+        MinecraftServer.getGlobalEventHandler()
+                .call(new PlayerSwitchAbilityEvent(player, devPlayer.getAbilitySlot(), false));
     }
 
     public void handlePlayerSwapItemEvent(PlayerSwapItemEvent event) {
@@ -114,6 +119,8 @@ public class DevEvents {
         // scroll to the left of abilities
         DevPlayer devPlayer = server.wrap(player);
         devPlayer.setAbilitySlot((byte) (devPlayer.getAbilitySlot() + 1));
+        MinecraftServer.getGlobalEventHandler()
+                .call(new PlayerSwitchAbilityEvent(player, devPlayer.getAbilitySlot(), false));
     }
 
     public void handlePlayerChangeHeldSlotEvent(PlayerChangeHeldSlotEvent event) {
@@ -144,6 +151,9 @@ public class DevEvents {
             }
             case "SET" -> devPlayer.setAbilitySlot(event.getSlot());
         }
+
+        MinecraftServer.getGlobalEventHandler()
+                .call(new PlayerSwitchAbilityEvent(player, devPlayer.getAbilitySlot(), true));
     }
 
     public void handlePlayerUseItemEvent(PlayerUseItemEvent event) {
