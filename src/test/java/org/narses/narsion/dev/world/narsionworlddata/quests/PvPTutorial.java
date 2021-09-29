@@ -162,7 +162,7 @@ class PvPTutorial implements Quest {
                 // Register the event listener
                 EventListener<PlayerSwitchAbilityEvent> eventListener = EventListener.builder(PlayerSwitchAbilityEvent.class)
                         .filter((event) -> event.getPlayer().equals(player))
-                        .filter((event) -> event.isScroll())
+                        .filter(PlayerSwitchAbilityEvent::isScroll)
                         .handler((event) -> nextStep.run())
                         .expireCount(1)
                         .build();

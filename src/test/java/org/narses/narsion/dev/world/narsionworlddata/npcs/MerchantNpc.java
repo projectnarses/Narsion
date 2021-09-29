@@ -1,5 +1,6 @@
 package org.narses.narsion.dev.world.narsionworlddata.npcs;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.PlayerEntityInteractEvent;
@@ -16,9 +17,11 @@ abstract class MerchantNpc extends NonPlayableCharacter {
         super(uuid, id, homePosition, displayName);
     }
 
+    public abstract @NotNull Component getDisplayName();
+
     @Override
     public void onInteract(@NotNull NarsionServer server, PlayerEntityInteractEvent event) {
-        event.getPlayer().openInventory(new TradeInventory(server, getTrades(server)));
+        event.getPlayer().openInventory(new TradeInventory(server, this.getDisplayName(), getTrades(server)));
     }
 
     protected abstract TradeInventory.Trade[] getTrades(@NotNull NarsionServer server);

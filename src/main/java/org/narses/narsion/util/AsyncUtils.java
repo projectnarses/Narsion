@@ -15,12 +15,16 @@ public class AsyncUtils {
      * Schedules the specified tasks to run with the specified duration between them
      * @param duration the duration between the tasks
      * @param runnables the tasks
-     * @return
+     * @return a completable future
      */
     public static @NotNull CompletableFuture<?> scheduleTasks(
             @NotNull final Duration duration,
             @NotNull final Runnable... runnables
     ) {
+        if (runnables.length == 0) {
+            return CompletableFuture.completedFuture(null);
+        }
+
         final CompletableFuture<?> completableFuture = new CompletableFuture<>();
 
         AtomicInteger currentIndex = new AtomicInteger(-1);
@@ -59,12 +63,17 @@ public class AsyncUtils {
      * @param consumer the consumer to run
      * @param elements the elements
      * @param <T> the type of the element
+     * @return a completable future
      */
     public static <T> CompletableFuture<?> scheduleTasks(
             @NotNull final Duration duration,
             @NotNull final Consumer<T> consumer,
             @NotNull final T... elements
     ) {
+        if (elements.length == 0) {
+            return CompletableFuture.completedFuture(null);
+        }
+
         final CompletableFuture<?> completableFuture = new CompletableFuture<>();
 
         AtomicInteger currentIndex = new AtomicInteger(-1);
@@ -90,11 +99,6 @@ public class AsyncUtils {
                         .schedule();
             }
         };
-
-        if (elements.length == 0) {
-            completableFuture.complete(null);
-            return completableFuture;
-        }
 
         // Run the first iteration
         nextConsumer.run();

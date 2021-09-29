@@ -104,6 +104,14 @@ public class DevServer extends NarsionServer {
         return primaryInstance;
     }
 
+    /**
+     * Gets the region manager of this server
+     * @return the region manager
+     */
+    public @NotNull RegionManager getRegionManager() {
+        return regionManager;
+    }
+
     private static class DevelopmentChunkGenerator implements ChunkGenerator {
 
         @Override

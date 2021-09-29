@@ -7,8 +7,8 @@ import org.narses.narsion.classes.abilities.Ability;
 
 public record PlayerSwitchAbilityEvent(
         @NotNull Player player,
-        @NotNull int abilitySlot,
-        @NotNull boolean scroll
+        int abilitySlot,
+        boolean scroll
 ) implements PlayerEvent {
 
     @Override
@@ -16,7 +16,7 @@ public record PlayerSwitchAbilityEvent(
         return player;
     }
 
-    public @NotNull int getAbilitySlot() { return abilitySlot; }
+    public int getAbilitySlot() { return abilitySlot; }
 
-    public @NotNull boolean isScroll() { return scroll; }
+    public boolean isScroll() { return scroll; }
 }

@@ -40,8 +40,8 @@ public class TradeInventory extends Inventory implements ClickableInventory {
     private final Trade[] trades;
     private Trade selectedTrade;
 
-    public TradeInventory(@NotNull NarsionServer server, @NotNull Trade... trades) {
-        super(InventoryType.MERCHANT, Component.text("test"));
+    public TradeInventory(@NotNull NarsionServer server, @NotNull Component inventoryTitle, @NotNull Trade... trades) {
+        super(InventoryType.MERCHANT, inventoryTitle);
         this.server = server;
         this.trades = trades;
 
@@ -66,6 +66,24 @@ public class TradeInventory extends Inventory implements ClickableInventory {
     }
 
     private static @NotNull ItemStack generateBundle(@NotNull NarsionServer server, @NotNull Object2IntMap<String> items) {
+
+        // Exit early if only a single item
+        if (items.size() == 1) {
+            for (Object2IntMap.Entry<String> item : items.object2IntEntrySet()) {
+                String itemID = item.getKey();
+                int itemAmount = item.getIntValue();
+                return server.getItemStackProvider()
+                        .create(
+                                itemID,
+                                server.getOriginProvider().DISPLAY("inventory:merchant"),
+                                null
+                        )
+                        .withAmount(itemAmount);
+            }
+        }
+
+        // Else create bundle
+
         ItemStackBuilder builder = ItemStack.builder(Material.BUNDLE);
 
         final List<Component> lore = new ArrayList<>();
@@ -201,14 +219,21 @@ public class TradeInventory extends Inventory implements ClickableInventory {
         public TradeListPacket.Trade apply(@NotNull NarsionServer server) {
             TradeListPacket.Trade trade = new TradeListPacket.Trade();
 
-            trade.inputItem1 = generateBundle(server, ingredients).withDisplayName(INGREDIENTS_DISPLAY_NAME);
-            trade.result = generateBundle(server, result).withDisplayName(RESULT_DISPLAY_NAME);
+            trade.inputItem1 = generateBundle(server, ingredients);
+            trade.result = generateBundle(server, result);
             trade.tradeDisabled = false;
             trade.exp = 0;
             trade.maxTradeUsesNumber = Integer.MAX_VALUE;
             trade.priceMultiplier = 0.0F;
             trade.specialPrice = 0;
             trade.demand = 0;
+
+            if (trade.inputItem1.getMaterial() == Material.BUNDLE) {
+                trade.inputItem1 = trade.inputItem1.withDisplayName(INGREDIENTS_DISPLAY_NAME);
+            }
+            if (trade.result.getMaterial() == Material.BUNDLE) {
+                trade.result = trade.result.withDisplayName(RESULT_DISPLAY_NAME);
+            }
 
             return trade;
         }

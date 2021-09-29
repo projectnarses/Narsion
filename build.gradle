@@ -6,7 +6,7 @@ plugins {
 group 'org.narses'
 version 'DEVELOPMENTBUILD-ALPHA'
 
-targetCompatibility = '16'
+targetCompatibility = '17'
 
 repositories {
     mavenCentral()
@@ -17,6 +17,7 @@ repositories {
 }
 
 dependencies {
+
     // Minestom (new block api)
     implementation 'com.github.Minestom:Minestom:872a49d'
 

@@ -1,6 +1,7 @@
 package org.narses.narsion.dev.world.narsionworlddata.npcs;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.minestom.server.coordinate.Pos;
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +35,16 @@ class VeteranMerchant extends MerchantNpc {
             )
     };
 
+    private final Component displayName;
+
     public VeteranMerchant(@NotNull UUID uuid, @NotNull String id, @NotNull Pos homePosition, @NotNull TextComponent displayName) {
         super(uuid, id, homePosition, displayName);
+        this.displayName = displayName;
+    }
+
+    @Override
+    public @NotNull Component getDisplayName() {
+        return displayName;
     }
 
     @Override
