@@ -1,8 +1,6 @@
 package org.narses.narsion.quest;
 
-import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.narses.narsion.NarsionServer;
 
 import java.util.ArrayList;
 import java.util.List;

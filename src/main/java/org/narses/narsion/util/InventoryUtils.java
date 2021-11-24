@@ -3,14 +3,11 @@ package org.narses.narsion.util;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minestom.server.inventory.AbstractInventory;
-import net.minestom.server.inventory.Inventory;
 import net.minestom.server.item.ItemStack;
 import org.itemize.data.ItemData;
 import org.jetbrains.annotations.NotNull;
-import org.narses.narsion.item.NarsionItemStackProvider;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Objects;
 
 public class InventoryUtils {

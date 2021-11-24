@@ -22,7 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -43,6 +45,7 @@ public abstract class NarsionServer {
     protected final @NotNull PlayerClasses playerClasses;
     protected final @NotNull OriginProvider originProvider;
     protected final @NotNull SocialsManager socialsManager;
+    protected final @NotNull EventNode<Event> eventNode;
 
     public NarsionServer(
             @NotNull MinecraftServer minecraftServer,
@@ -53,6 +56,8 @@ public abstract class NarsionServer {
     ) {
         // First and foremost, read config.
         this.config = new Toml().read(configFile);
+
+        this.eventNode = eventNode;
 
         // Item data + provider
         final NarsionItemDataProvider narsionItemDataProvider = new NarsionItems();
@@ -133,4 +138,8 @@ public abstract class NarsionServer {
     public @NotNull OriginProvider getOriginProvider() {
         return originProvider;
     };
+
+    public @NotNull EventNode<Event> getEventNode() {
+        return eventNode;
+    }
 }

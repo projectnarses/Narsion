@@ -6,7 +6,6 @@ import net.minestom.server.utils.NamespaceID;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.function.Supplier;
 
 public class StaticBlock implements BlockHandler {
 

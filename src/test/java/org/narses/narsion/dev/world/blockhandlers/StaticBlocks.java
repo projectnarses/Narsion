@@ -3,8 +3,6 @@ package org.narses.narsion.dev.world.blockhandlers;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.tag.Tag;
 import org.jetbrains.annotations.NotNull;
-import org.jglrxavpok.hephaistos.nbt.NBTCompound;
-import org.jglrxavpok.hephaistos.nbt.NBTList;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,6 +1,5 @@
 package org.narses.narsion.classes;
 
-import org.narses.narsion.classes.Archetype;
 import org.narses.narsion.classes.abilities.Ability;
 
 /**

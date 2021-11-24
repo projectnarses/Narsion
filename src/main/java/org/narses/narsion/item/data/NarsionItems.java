@@ -20,7 +20,9 @@ import org.narses.narsion.item.data.type.DamageType;
 import org.narses.narsion.item.data.type.ItemTypeData;
 import org.narses.narsion.util.TextUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;

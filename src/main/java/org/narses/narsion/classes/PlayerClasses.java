@@ -8,7 +8,8 @@ import org.narses.narsion.classes.abilities.Ability;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.narses.narsion.util.TomlUtils.*;
+import static org.narses.narsion.util.TomlUtils.Keys;
+import static org.narses.narsion.util.TomlUtils.TomlKey;
 
 /**
  * This class represents all loaded player classes

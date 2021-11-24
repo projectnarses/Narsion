@@ -6,11 +6,11 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.math.geometry.Area3dPolygon;
 import org.narses.narsion.dev.player.DevPlayer;
+import org.narses.narsion.math.geometry.Area3dPolygon;
+import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.region.RegionType;
 import org.narses.narsion.region.StaticRegion;
-import org.narses.narsion.player.NarsionPlayer;
 
 import java.util.HashSet;
 import java.util.Set;

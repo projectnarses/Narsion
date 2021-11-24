@@ -10,6 +10,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.classes.PlayerClass;
 import org.narses.narsion.quest.Quest;
+import org.narses.narsion.social.Guild;
 import org.narses.narsion.social.SocialMember;
 import org.narses.narsion.social.SocialRank;
 import org.narses.narsion.util.TagUtils;
@@ -96,5 +97,9 @@ public class NarsionPlayer implements TagReadable, TagWritable, SocialMember {
     @Override
     public @NotNull UUID getUuid() {
         return this.player.getUuid();
+    }
+
+    public @Nullable Guild getGuild() {
+        return server.getSocialsManager().getGuildFromMember(this);
     }
 }

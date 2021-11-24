@@ -1,22 +1,20 @@
 package org.narses.narsion.dev.commands;
 
 import net.minestom.server.command.CommandSender;
-import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
-import static net.minestom.server.command.builder.arguments.ArgumentType.*;
-
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.ItemStack;
 import org.narses.narsion.NarsionServer;
+import org.narses.narsion.commands.NarsionCommand;
 
 import java.util.UUID;
 
-public class ItemCommand extends Command {
+import static net.minestom.server.command.builder.arguments.ArgumentType.Word;
 
-    private final NarsionServer server;
+public class ItemCommand extends NarsionCommand<NarsionServer> {
 
     public ItemCommand(NarsionServer server) {
-        super("item");
+        super(server, "item");
         this.server = server;
 
         String[] itemIDs = server.getItemDataProvider()

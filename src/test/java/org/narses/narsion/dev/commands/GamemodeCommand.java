@@ -4,9 +4,6 @@ import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
-import net.minestom.server.command.builder.Command;
-import static net.minestom.server.command.builder.arguments.ArgumentType.*;
-
 import net.minestom.server.command.builder.arguments.ArgumentEnum;
 import net.minestom.server.command.builder.arguments.minecraft.ArgumentEntity;
 import net.minestom.server.entity.Entity;
@@ -14,9 +11,13 @@ import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.utils.entity.EntityFinder;
 import org.narses.narsion.NarsionServer;
+import org.narses.narsion.commands.NarsionCommand;
 
 import java.util.List;
 import java.util.Locale;
+
+import static net.minestom.server.command.builder.arguments.ArgumentType.Entity;
+import static net.minestom.server.command.builder.arguments.ArgumentType.Enum;
 
 /**
  * Command that make a player change gamemode, made in
@@ -24,12 +25,10 @@ import java.util.Locale;
  *
  * @see https://minecraft.fandom.com/wiki/Commands/gamemode
  */
-public class GamemodeCommand extends Command {
-
-    private final NarsionServer server;
+public class GamemodeCommand extends NarsionCommand<NarsionServer> {
 
     public GamemodeCommand(NarsionServer server) {
-        super("gamemode", "gm");
+        super(server, "gamemode", "gm");
         this.server = server;
 
         //GameMode parameter

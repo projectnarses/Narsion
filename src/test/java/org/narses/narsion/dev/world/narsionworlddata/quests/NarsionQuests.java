@@ -1,8 +1,6 @@
 package org.narses.narsion.dev.world.narsionworlddata.quests;
 
-import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.narses.narsion.NarsionServer;
 import org.narses.narsion.quest.Quest;
 import org.narses.narsion.util.Equivalent;
 

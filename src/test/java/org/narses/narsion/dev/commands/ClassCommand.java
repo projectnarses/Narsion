@@ -1,26 +1,25 @@
 package org.narses.narsion.dev.commands;
 
 import net.minestom.server.command.CommandSender;
-import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
-import static net.minestom.server.command.builder.arguments.ArgumentType.*;
-
 import net.minestom.server.command.builder.suggestion.Suggestion;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.classes.PlayerClass;
 import org.narses.narsion.classes.abilities.Ability;
+import org.narses.narsion.commands.NarsionCommand;
 import org.narses.narsion.player.NarsionPlayer;
 
 import java.util.Arrays;
 
-public class ClassCommand extends Command {
+import static net.minestom.server.command.builder.arguments.ArgumentType.Literal;
+import static net.minestom.server.command.builder.arguments.ArgumentType.Word;
 
-    private final NarsionServer server;
+public class ClassCommand extends NarsionCommand<NarsionServer> {
 
     public ClassCommand(NarsionServer server) {
-        super("class");
+        super(server, "class");
 
         this.server = server;
 

@@ -4,7 +4,6 @@ import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.quest.ConstructedQuest;
-import org.narses.narsion.quest.Quest;
 import org.narses.narsion.util.AsyncUtils;
 
 import java.time.Duration;

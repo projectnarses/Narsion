@@ -4,6 +4,8 @@ import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.NarsionServer;
+import org.narses.narsion.player.NarsionPlayer;
+import org.narses.narsion.util.StringUtils;
 
 import java.util.*;
 
@@ -18,9 +20,10 @@ public class SocialsManager {
     // Social ranks and members
     private final Map<UUID, SocialRank> socialRanks = new HashMap<>();
 
-    // Loaded member groups
+    // Loaded social groups
     private final Map<UUID, Guild> loadedGuilds = new HashMap<>();
     private final Map<UUID, Nation> loadedNations = new HashMap<>();
+    private final Map<UUID, SocialGroup<?, ?>> loadedGroups = new HashMap<>();
 
     // Cached relationships
     private final Map<UUID, UUID> player2Guild = new HashMap<>();
@@ -51,8 +54,8 @@ public class SocialsManager {
      * @param players the players of the guild
      * @return the guild object
      */
-    public @NotNull Guild createGuild(@NotNull String name, @NotNull Player leader, Player... players) {
-        UUID[] uuids = Arrays.stream(players).map(Player::getUuid).toArray(UUID[]::new);
+    public @NotNull Guild createGuild(@NotNull String name, @NotNull NarsionPlayer leader, NarsionPlayer... players) {
+        UUID[] uuids = Arrays.stream(players).map(NarsionPlayer::getUuid).toArray(UUID[]::new);
         return loadGuild(UUID.randomUUID(), name, leader.getUuid(), uuids);
     }
 
@@ -65,11 +68,12 @@ public class SocialsManager {
      * @return the guild object
      */
     public @NotNull Guild loadGuild(@NotNull UUID guildUuid, @NotNull String name, @NotNull UUID leader, UUID... players) {
-        Guild guild = new Guild(server, name, guildUuid, leader, players);
+        Guild guild = new Guild(server, name, guildUuid, leader);
         loadedGuilds.put(guildUuid, guild);
+        loadedGroups.put(guildUuid, guild);
 
         // Add leader
-        addPlayerToGuild(leader, guildUuid, SocialRank.LEADER);
+        addPlayerToGuild(leader, guildUuid, SocialRank.PEASANT);
 
         // Add members
         for (UUID player : players) {
@@ -83,7 +87,7 @@ public class SocialsManager {
      * @return the default social rank
      */
     public @NotNull SocialRank getDefaultRank() {
-        return SocialRank.MEMBER;
+        return SocialRank.PEASANT;
     }
 
     /**
@@ -169,7 +173,8 @@ public class SocialsManager {
         }
         if (guild.remove(player)) {
             this.player2Guild.remove(player);
-            this.socialRanks.remove(player);
+            setRank(player, null);
+            guild.onLeave(player);
         }
         return false;
     }
@@ -195,12 +200,10 @@ public class SocialsManager {
         if (guildObject == null) {
             return false;
         }
-        if (getGuildFromMember(player) != null) {
-            return false;
-        }
         if (guildObject.add(player)) {
             this.player2Guild.put(player, guild);
             setRank(player, rank);
+            guildObject.onJoin(player);
             return true;
         }
         return false;
@@ -224,5 +227,66 @@ public class SocialsManager {
      */
     public boolean setRank(SocialMember member, SocialRank rank) {
         return this.setRank(member.getUuid(), rank);
+    }
+
+    /**
+     * Gets all the guilds
+     * @return all the guilds
+     */
+    public @NotNull Map<UUID, Guild> getGuilds() {
+        return Collections.unmodifiableMap(loadedGuilds);
+    }
+
+    /**
+     * Gets all the nations
+     * @return all the nations
+     */
+    public @NotNull Map<UUID, Nation> getNations() {
+        return Collections.unmodifiableMap(loadedNations);
+    }
+
+    /**
+     * Gets the guild with the closest name to this name, within reason
+     * @param name the name to search for
+     * @return the guild if found, null if else
+     */
+    public @Nullable Guild getClosestGuild(@NotNull String name) {
+        return StringUtils.getClosestNamed(name, loadedGuilds.values(), 0.5, Guild::getName);
+    }
+
+    /**
+     * Invites a member to a group
+     * @param playerToInviteUuid the player to invite
+     * @param group the group to invite to
+     */
+    public void inviteMemberToGroup(UUID playerToInviteUuid, UUID group) {
+        SocialGroup<?, ?> groupObject = getGroupFromUuid(group);
+        if (groupObject == null) {
+            return;
+        }
+
+        if (groupObject.getInvites().add(playerToInviteUuid)) {
+            groupObject.onInvite(group);
+        }
+    }
+
+    private @Nullable SocialGroup<?, ?> getGroupFromUuid(@NotNull UUID uuid) {
+        return loadedGroups.get(uuid);
+    }
+
+    /**
+     * Remove an invite from a group
+     * @param playerToUninviteUuid the player to uninvite
+     * @param group the group to uninvite from
+     */
+    public void uninviteMemberToGroup(UUID playerToUninviteUuid, UUID group) {
+        SocialGroup<?, ?> groupObject = getGroupFromUuid(group);
+        if (groupObject == null) {
+            return;
+        }
+
+        if (groupObject.getInvites().remove(playerToUninviteUuid)) {
+            groupObject.onUninvite(group);
+        }
     }
 }

@@ -3,28 +3,30 @@ package org.narses.narsion.dev;
 import com.moandjiezana.toml.Toml;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
-import net.minestom.server.instance.*;
+import net.minestom.server.instance.Chunk;
+import net.minestom.server.instance.ChunkGenerator;
+import net.minestom.server.instance.ChunkPopulator;
+import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockManager;
 import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.narses.narsion.classes.PlayerClasses;
-import org.narses.narsion.dev.commands.*;
-import org.narses.narsion.dev.player.DevPlayer;
-import org.narses.narsion.dev.events.DevEvents;
 import org.narses.narsion.NarsionServer;
-import org.narses.narsion.dev.world.WorldDownloader;
+import org.narses.narsion.classes.PlayerClasses;
+import org.narses.narsion.dev.commands.NarsionCommands;
+import org.narses.narsion.dev.events.DevEvents;
+import org.narses.narsion.dev.player.DevPlayer;
+import org.narses.narsion.dev.world.blockhandlers.StaticBlocks;
+import org.narses.narsion.dev.world.narsionworlddata.npcs.NarsionNPCs;
 import org.narses.narsion.dev.world.narsionworlddata.regions.NarsionRegions;
 import org.narses.narsion.origin.OriginProvider;
 import org.narses.narsion.region.RegionManager;
-import org.narses.narsion.dev.world.blockhandlers.StaticBlocks;
-import org.narses.narsion.dev.world.narsionworlddata.npcs.NarsionNPCs;
 
 import java.io.File;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A development flavour of the NarsionServer used for testing purposes
@@ -54,11 +56,11 @@ public class DevServer extends NarsionServer {
         );
 
         // Try download world first
-        try {
-            new WorldDownloader(this).updateWorldFiles().get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            new WorldDownloader(this).updateWorldFiles().get();
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//        }
 
         // Start dev instance
         this.primaryInstance = MinecraftServer.getInstanceManager().createInstanceContainer();

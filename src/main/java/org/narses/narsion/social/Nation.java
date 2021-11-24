@@ -14,40 +14,35 @@ class Nation implements SocialGroup<Guild, Nation.NationInfo> {
     // Nation info
     private final @NotNull UUID uuid;
     private final long creationTime;
-    private @NotNull Guild leader;
+    private @NotNull UUID leader;
     private @NotNull String name;
 
-    private final @NotNull Set<Guild> members = new HashSet<>();
+    private final @NotNull Set<UUID> members = new HashSet<>();
+    private final @NotNull Set<UUID> invites = new HashSet<>();
 
-    Nation(@NotNull NarsionServer server, @NotNull String name, @NotNull UUID uuid, @NotNull Guild leader) {
+    Nation(@NotNull NarsionServer server, @NotNull String name, @NotNull UUID uuid, @NotNull UUID leader) {
         this.leader = leader;
         this.server = server;
         this.SOCIALS_MANAGER = server.getSocialsManager();
         this.name = name;
         this.uuid = uuid;
         this.creationTime = System.currentTimeMillis();
-        members.add(leader);
-    }
-
-    @Override
-    public @NotNull Collection<@NotNull Guild> getOnlineMembers(@NotNull Predicate<Guild> filter) {
-        return members.stream().filter(filter).toList();
     }
 
     @Override
     public @NotNull Collection<@NotNull UUID> getMembers(@NotNull Predicate<UUID> filter) {
-        return members.stream().map(Guild::getUuid).filter(filter).toList();
+        return members.stream().filter(filter).toList();
     }
 
     @Override
     public @NotNull Nation.NationInfo getInfo() {
         Map<Guild, SocialRank> guildRanksByGuild = new HashMap<>(members.size());
-        for (Guild guild : members) {
-            guildRanksByGuild.put(guild, guild.getRank());
+        for (UUID guild : members) {
+            guildRanksByGuild.put(SOCIALS_MANAGER.getGuildFromUuid(guild), SOCIALS_MANAGER.getRank(guild));
         }
 
         // TODO: Fetch actual leader history
-        List<Guild> leaderList = List.of(leader);
+        List<Guild> leaderList = List.of(SOCIALS_MANAGER.getGuildFromUuid(leader));
         return new NationInfo(
                 name,
                 creationTime,
@@ -58,14 +53,38 @@ class Nation implements SocialGroup<Guild, Nation.NationInfo> {
 
     @Override
     public boolean add(@NotNull UUID member) {
-        return false;
+        return members.add(member);
     }
 
     @Override
     public boolean remove(@NotNull UUID member) {
-        return false;
+        return members.remove(member);
     }
 
+    @Override
+    public boolean contains(UUID member) {
+        return members.contains(member);
+    }
+
+    @Override
+    public void onChat(@NotNull GroupChatMessage<Guild> chat) {
+
+    }
+
+    @Override
+    public void onJoin(@NotNull UUID member) {
+
+    }
+
+    @Override
+    public void onLeave(@NotNull UUID member) {
+
+    }
+
+    @Override
+    public @NotNull Set<UUID> getInvites() {
+        return invites;
+    }
 
     public record NationInfo(
             @NotNull String name,

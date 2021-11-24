@@ -1,8 +1,6 @@
 package org.narses.narsion.quest;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.network.PacketProcessor;
-import net.minestom.server.network.packet.client.handshake.HandshakePacket;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.player.NarsionPlayer;

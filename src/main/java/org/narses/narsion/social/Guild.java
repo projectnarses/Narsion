@@ -2,8 +2,8 @@ package org.narses.narsion.social;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.NarsionServer;
@@ -11,7 +11,6 @@ import org.narses.narsion.player.NarsionPlayer;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class Guild implements SocialGroup<NarsionPlayer, Guild.GuildInfo>, SocialMember {
 
@@ -24,11 +23,11 @@ public class Guild implements SocialGroup<NarsionPlayer, Guild.GuildInfo>, Socia
     private final @NotNull UUID uuid;
 
     // Guild members
-    private final @NotNull Set<UUID> members = new HashSet<>();
-    private final @NotNull Set<NarsionPlayer> onlineMembers = new HashSet<>();
     private final @NotNull UUID leader;
+    private final @NotNull Set<UUID> members = new HashSet<>();
+    private final @NotNull Set<UUID> invites = new HashSet<>();
 
-    Guild(@NotNull NarsionServer server, @NotNull String name, @NotNull UUID uuid, @NotNull UUID leader, UUID... players) {
+    Guild(@NotNull NarsionServer server, @NotNull String name, @NotNull UUID uuid, @NotNull UUID leader) {
         this.SOCIALS_MANAGER = server.getSocialsManager();
         this.server = server;
 
@@ -36,13 +35,6 @@ public class Guild implements SocialGroup<NarsionPlayer, Guild.GuildInfo>, Socia
         this.name = name;
         this.uuid = uuid;
         this.leader = leader;
-        this.members.add(leader);
-        members.addAll(Arrays.asList(players));
-    }
-
-    @Override
-    public @NotNull Collection<@NotNull NarsionPlayer> getOnlineMembers(@NotNull Predicate<NarsionPlayer> filter) {
-        return onlineMembers.stream().filter(filter).toList();
     }
 
     @Override
@@ -78,19 +70,81 @@ public class Guild implements SocialGroup<NarsionPlayer, Guild.GuildInfo>, Socia
     }
 
     @Override
-    public boolean add(@NotNull NarsionPlayer member) {
-        boolean added = members.add(member.getUuid());
-        onlineMembers.add(member);
-
-        return added;
+    public boolean contains(UUID member) {
+        return members.contains(member);
     }
 
     @Override
-    public boolean remove(@NotNull NarsionPlayer member) {
-        boolean removed = members.remove(member.getUuid());
-        onlineMembers.remove(member);
+    public void onChat(@NotNull GroupChatMessage<NarsionPlayer> chat) {
+        var narsionPlayer = chat.member();
+        Player sender = narsionPlayer.getPlayer();
+        SocialRank rank = narsionPlayer.getRank();
 
-        return removed;
+        for (UUID member : members) {
+            Player player = MinecraftServer.getConnectionManager().getPlayer(member);
+
+            if (player == null) {
+                continue;
+            }
+
+            // TODO: Move this format to config using minimessage
+            Component message = Component.text()
+                    .append(
+                            Component.text("[Guild] "),
+                            sender.getName().color(NamedTextColor.GOLD),
+                            Component.text(" ["),
+                            SocialRank.getDisplayName(rank),
+                            Component.text("] "),
+                            Component.text(" -> "),
+                            Component.text(chat.message())
+                    ).build();
+            player.sendMessage(message);
+        }
+    }
+
+    @Override
+    public void onJoin(@NotNull UUID member) {
+        Player joiningPlayer = MinecraftServer.getConnectionManager().getPlayer(member);
+
+        // TODO: Handle offline player names & remove this
+        if (joiningPlayer == null) {
+            return;
+        }
+
+        // Notify all guild members
+        for (UUID guildMember : members) {
+            Player player = MinecraftServer.getConnectionManager().getPlayer(guildMember);
+            if (player == null) {
+                continue;
+            }
+            player.sendMessage("New Player: " + joiningPlayer.getUsername() + " joined the guild!");
+        }
+
+        joiningPlayer.refreshCommands();
+    }
+
+    @Override
+    public void onLeave(@NotNull UUID member) {
+        Player leavingPlayer = MinecraftServer.getConnectionManager().getPlayer(member);
+
+        // TODO: Handle offline player names & remove this
+        if (leavingPlayer == null) {
+            return;
+        }
+
+        // Notify all guild members
+        for (UUID guildMember : members) {
+            Player player = MinecraftServer.getConnectionManager().getPlayer(guildMember);
+            if (player == null) {
+                continue;
+            }
+            player.sendMessage("Player: " + leavingPlayer.getUsername() + " left the guild :(");
+        }
+    }
+
+    @Override
+    public @NotNull Set<UUID> getInvites() {
+        return invites;
     }
 
     @Override
@@ -101,6 +155,10 @@ public class Guild implements SocialGroup<NarsionPlayer, Guild.GuildInfo>, Socia
     @Override
     public @NotNull UUID getUuid() {
         return uuid;
+    }
+
+    public @NotNull String getName() {
+        return name;
     }
 
     public record GuildInfo(

@@ -1,7 +1,6 @@
 package org.narses.narsion.item;
 
 import net.minestom.server.item.ItemStackBuilder;
-import net.minestom.server.item.StackingRule;
 import org.itemize.ItemStackProvider;
 import org.itemize.data.ItemData;
 import org.jetbrains.annotations.NotNull;
