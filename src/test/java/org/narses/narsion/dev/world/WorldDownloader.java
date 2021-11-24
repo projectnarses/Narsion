@@ -22,8 +22,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class WorldDownloader {
 
     private static final String remoteHost = "panel.tempusrift.net";
-    private static final int port = 2022;
     private static final String username = "public.68f85fd7";
+    private static final int port = 2022;
+
     private static final String downloadDir = "Narses6k";
     private static final String saveDir = "world";
     private static final String timekeeper = "level.dat";

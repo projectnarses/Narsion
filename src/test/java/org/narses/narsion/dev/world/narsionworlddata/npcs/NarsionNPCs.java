@@ -61,7 +61,7 @@ public enum NarsionNPCs {
     public @NotNull NonPlayableCharacter spawn(@NotNull Instance instance) {
 
         // Create npc
-        final NonPlayableCharacter npc = supplier.get(uuid, name(), homePosition, displayName);
+        final NonPlayableCharacter npc = supplier.create(uuid, name(), homePosition, displayName);
 
         // Build dialogue
         buildDialogue(npc, instance);

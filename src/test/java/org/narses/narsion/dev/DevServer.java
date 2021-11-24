@@ -42,7 +42,6 @@ public class DevServer extends NarsionServer {
 
     /**
      * Initializes a dev server
-     *
      * @param server the server being initialized
      */
     private DevServer(final MinecraftServer server) {
@@ -81,11 +80,10 @@ public class DevServer extends NarsionServer {
         {
             final CommandManager manager = MinecraftServer.getCommandManager();
 
-            manager.register(new ItemCommand(this));
-            manager.register(new ClassCommand(this));
-            manager.register(new GamemodeCommand(this));
-            manager.register(new GuildCommand(this));
-            manager.register(new DebugCommand(this));
+            // Register all narsion commands
+            for (NarsionCommands value : NarsionCommands.values()) {
+                manager.register(value.getCommand(this));
+            }
         }
 
         // Register block handlers
@@ -100,6 +98,10 @@ public class DevServer extends NarsionServer {
         server.start(config.getString("Server.IP"), config.getLong("Server.Port").intValue());
     }
 
+    /**
+     * Gets the primary instance of the server
+     * @return the primary instance
+     */
     public @NotNull InstanceContainer getPrimaryInstance() {
         return primaryInstance;
     }

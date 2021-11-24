@@ -177,12 +177,6 @@ class PvPTutorial implements Quest {
     }
 
     @Override
-    public @NotNull String id() {
-        new IllegalAccessException("Quest id accessed from package-private class instead of enum name.").printStackTrace();
-        return "";
-    }
-
-    @Override
     public void complete(@NotNull NarsionServer server, @NotNull Player player) {
         AsyncUtils.scheduleTasks(
                 Duration.of(3, ChronoUnit.SECONDS),

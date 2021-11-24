@@ -7,7 +7,6 @@ import net.minestom.server.Bootstrap;
  */
 public class BootstrapDevServer {
     public static void main(String[] args) {
-
         // Initialize the server
         Bootstrap.bootstrap("org.narses.narsion.dev.DevServer", args);
     }

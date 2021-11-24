@@ -79,7 +79,7 @@ public class NonPlayableCharacter extends LivingEntity implements NavigableEntit
         super.update(time);
 
         // Path finding
-        this.navigator.tick(getAttributeValue(Attribute.MOVEMENT_SPEED));
+        this.navigator.tick();
     }
 
     @Override
@@ -101,17 +101,17 @@ public class NonPlayableCharacter extends LivingEntity implements NavigableEntit
     }
 
     @Override
-    public boolean addViewer0(@NotNull Player player) {
+    public void updateNewViewer(@NotNull Player player) {
         final PlayerConnection connection = player.getPlayerConnection();
         connection.sendPacket(PLAYER_ADD_INFO);
         // Hide npc from tablist
         // This needs to be delayed, otherwise the player does not render.
         this.scheduleNextTick((ignored) -> connection.sendPacket(PLAYER_HIDE_INFO));
-        return super.addViewer0(player);
+        super.updateNewViewer(player);
     }
 
     public static interface NPCSupplier {
-        public @NotNull NonPlayableCharacter get(
+        public @NotNull NonPlayableCharacter create(
                 @NotNull UUID uuid,
                 @NotNull String id,
                 @NotNull Pos homePosition,

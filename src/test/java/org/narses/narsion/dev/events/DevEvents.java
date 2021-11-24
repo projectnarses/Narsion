@@ -75,7 +75,7 @@ public class DevEvents {
             region.addViewer(player);
         }
 
-        NarsionQuests.EXAMPLE.embark(server, player);
+        NarsionQuests.EXAMPLE.getEquivalent().embark(server, player);
     }
 
     public void handlePlayerPacketEvent(PlayerPacketEvent event) {

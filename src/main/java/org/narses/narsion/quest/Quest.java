@@ -12,7 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public interface Quest {
 
     @NotNull QuestStep @NotNull [] steps();
-    @NotNull String id();
+    public default @NotNull String id() {
+        new IllegalAccessException("Quest id accessed from quest interface instead of enum name.").printStackTrace();
+        return "";
+    };
 
     default @NotNull QuestEmbarkInfo embark(final @NotNull NarsionServer server, final @NotNull Player player) {
         final NarsionPlayer narsionPlayer = server.wrap(player);

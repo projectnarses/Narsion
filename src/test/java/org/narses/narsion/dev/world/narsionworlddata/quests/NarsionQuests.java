@@ -4,11 +4,14 @@ import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.quest.Quest;
+import org.narses.narsion.util.Equivalent;
 
 import java.util.function.Supplier;
 
-public enum NarsionQuests implements Quest {
-    EXAMPLE(PvPTutorial::new);
+public enum NarsionQuests implements Equivalent<Quest> {
+    EXAMPLE(PvPTutorial::new),
+    REGION(RegionTutorial::new),
+    ;
 
     final @NotNull Quest quest;
 
@@ -17,17 +20,7 @@ public enum NarsionQuests implements Quest {
     }
 
     @Override
-    public @NotNull QuestStep @NotNull [] steps() {
-        return quest.steps();
-    }
-
-    @Override
-    public @NotNull String id() {
-        return name();
-    }
-
-    @Override
-    public void complete(@NotNull NarsionServer server, @NotNull Player player) {
-        quest.complete(server, player);
+    public @NotNull Quest getEquivalent() {
+        return quest;
     }
 }
