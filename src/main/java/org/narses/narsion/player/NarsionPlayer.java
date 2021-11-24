@@ -10,12 +10,15 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.classes.PlayerClass;
 import org.narses.narsion.quest.Quest;
+import org.narses.narsion.social.SocialMember;
+import org.narses.narsion.social.SocialRank;
 import org.narses.narsion.util.TagUtils;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-public class NarsionPlayer implements TagReadable, TagWritable {
+public class NarsionPlayer implements TagReadable, TagWritable, SocialMember {
     protected final @NotNull NarsionServer server;
 
     // Player object
@@ -84,4 +87,14 @@ public class NarsionPlayer implements TagReadable, TagWritable {
     // Data tags
     public static final Tag<String> TAG_ABILITY_SELECTION_MODE = Tag.String("narsion:ability_selection_mode");
     public static final Tag<Boolean> TAG_VISITED_ELSINORE = TagUtils.Boolean("narsion:visited_elsinore");
+
+    @Override
+    public @Nullable SocialRank getRank() {
+        return server.getSocialsManager().getRank(this);
+    }
+
+    @Override
+    public @NotNull UUID getUuid() {
+        return this.player.getUuid();
+    }
 }

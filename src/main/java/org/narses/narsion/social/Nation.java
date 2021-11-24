@@ -1,21 +1,23 @@
 package org.narses.narsion.social;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.NarsionServer;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 class Nation implements SocialGroup<Guild, Nation.NationInfo> {
 
     private final NarsionServer server;
     private final SocialsManager SOCIALS_MANAGER;
+
+    // Nation info
     private final @NotNull UUID uuid;
-    private final @NotNull Map<Guild, SocialRank> guilds = new HashMap<>();
     private final long creationTime;
     private @NotNull Guild leader;
     private @NotNull String name;
+
+    private final @NotNull Set<Guild> members = new HashSet<>();
 
     Nation(@NotNull NarsionServer server, @NotNull String name, @NotNull UUID uuid, @NotNull Guild leader) {
         this.leader = leader;
@@ -24,48 +26,46 @@ class Nation implements SocialGroup<Guild, Nation.NationInfo> {
         this.name = name;
         this.uuid = uuid;
         this.creationTime = System.currentTimeMillis();
-
-        guilds.put(leader, SocialRank.LEADER);
+        members.add(leader);
     }
 
     @Override
-    public <T> @NotNull Collection<T> getPlayers(@NotNull PlayerFilter<T> filter) {
-        List<T> elements = new ArrayList<>();
+    public @NotNull Collection<@NotNull Guild> getOnlineMembers(@NotNull Predicate<Guild> filter) {
+        return members.stream().filter(filter).toList();
+    }
 
-        for (Guild guild : guilds.keySet()) {
-            elements.addAll(guild.getPlayers(filter));
-        }
-
-        return elements;
+    @Override
+    public @NotNull Collection<@NotNull UUID> getMembers(@NotNull Predicate<UUID> filter) {
+        return members.stream().map(Guild::getUuid).filter(filter).toList();
     }
 
     @Override
     public @NotNull Nation.NationInfo getInfo() {
-        return new NationInfo(name, creationTime, List.of(leader), guilds);
+        Map<Guild, SocialRank> guildRanksByGuild = new HashMap<>(members.size());
+        for (Guild guild : members) {
+            guildRanksByGuild.put(guild, guild.getRank());
+        }
+
+        // TODO: Fetch actual leader history
+        List<Guild> leaderList = List.of(leader);
+        return new NationInfo(
+                name,
+                creationTime,
+                leaderList,
+                guildRanksByGuild
+        );
     }
 
     @Override
-    public @Nullable SocialRank getRank(@NotNull UUID guild) {
-        return guilds.get(SOCIALS_MANAGER.getGuildFromUuid(guild));
+    public boolean add(@NotNull UUID member) {
+        return false;
     }
 
-    @ApiStatus.Internal
     @Override
-    public boolean add(@NotNull UUID element) {
-        return false; // TODO: Add guilds to nations
+    public boolean remove(@NotNull UUID member) {
+        return false;
     }
 
-    @ApiStatus.Internal
-    @Override
-    public boolean remove(@NotNull UUID element) {
-        return false; // TODO: Remove guilds from nations
-    }
-
-    @ApiStatus.Internal
-    @Override
-    public @NotNull UUID uuidOf(@NotNull Guild element) {
-        return element.getUuid();
-    }
 
     public record NationInfo(
             @NotNull String name,

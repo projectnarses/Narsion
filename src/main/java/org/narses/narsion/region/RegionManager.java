@@ -35,15 +35,19 @@ public record RegionManager(
         MinecraftServer.getGlobalEventHandler()
                 .addListener(PlayerTickEvent.class, this::updatePlayer);
 
-        // Schedule debug particles every second
-        MinecraftServer.getSchedulerManager()
-                .buildTask(() -> {
-                    for (Region region : this.regions) {
-                        showParticles(region);
-                    }
-                })
-                .repeat(1, TimeUnit.SECOND)
-                .schedule();
+        // Schedule debug particles every second if the config specifies it
+        Boolean shouldDoRegionBorders = server.getConfig().getBoolean("Debug.RegionBorders");
+
+        if (shouldDoRegionBorders != null && shouldDoRegionBorders) {
+            MinecraftServer.getSchedulerManager()
+                    .buildTask(() -> {
+                        for (Region region : this.regions) {
+                            showParticles(region);
+                        }
+                    })
+                    .repeat(1, TimeUnit.SECOND)
+                    .schedule();
+        }
     }
 
     /**

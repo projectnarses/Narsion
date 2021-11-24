@@ -7,76 +7,100 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.NarsionServer;
+import org.narses.narsion.player.NarsionPlayer;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-public class Guild implements SocialGroup<Player, Guild.GuildInfo> {
+public class Guild implements SocialGroup<NarsionPlayer, Guild.GuildInfo>, SocialMember {
 
     private final NarsionServer server;
     private final SocialsManager SOCIALS_MANAGER;
+
+    // Guild info
     private @NotNull String name;
     private final long creationTime;
-    private final @NotNull Map<UUID, SocialRank> players = new HashMap<>();
     private final @NotNull UUID uuid;
+
+    // Guild members
+    private final @NotNull Set<UUID> members = new HashSet<>();
+    private final @NotNull Set<NarsionPlayer> onlineMembers = new HashSet<>();
     private final @NotNull UUID leader;
 
     Guild(@NotNull NarsionServer server, @NotNull String name, @NotNull UUID uuid, @NotNull UUID leader, UUID... players) {
+        this.SOCIALS_MANAGER = server.getSocialsManager();
+        this.server = server;
+
         this.creationTime = System.currentTimeMillis();
         this.name = name;
         this.uuid = uuid;
         this.leader = leader;
-        this.server = server;
-        this.SOCIALS_MANAGER = server.getSocialsManager();
-        this.players.put(leader, SocialRank.LEADER);
-
-        for (UUID player : players) {
-            this.players.put(player, SocialRank.MEMBER);
-        }
-    }
-
-    public @NotNull UUID getUuid() {
-        return uuid;
+        this.members.add(leader);
+        members.addAll(Arrays.asList(players));
     }
 
     @Override
-    public <T> @NotNull Collection<T> getPlayers(@NotNull PlayerFilter<T> filter) {
-        return filter.uuidsFunction().apply(players.keySet());
+    public @NotNull Collection<@NotNull NarsionPlayer> getOnlineMembers(@NotNull Predicate<NarsionPlayer> filter) {
+        return onlineMembers.stream().filter(filter).toList();
+    }
+
+    @Override
+    public @NotNull Collection<@NotNull UUID> getMembers(@NotNull Predicate<UUID> filter) {
+        return members.stream().filter(filter).toList();
     }
 
     @Override
     public @NotNull Guild.GuildInfo getInfo() {
-        return new GuildInfo(name, creationTime, List.of(leader), players);
-    }
-
-    @Override
-    public @Nullable SocialRank getRank(@NotNull UUID player) {
-        return this.players.get(player);
-    }
-
-    @ApiStatus.Internal
-    @Override
-    public boolean add(@NotNull UUID player) {
-        if (this.players.containsKey(player)) {
-            return false;
+        Map<UUID, SocialRank> memberRanksByUuid = new HashMap<>(members.size());
+        for (UUID member : members) {
+            memberRanksByUuid.put(member, SOCIALS_MANAGER.getRank(member));
         }
-        this.players.put(player, SocialRank.MEMBER);
-        return true;
-    }
 
-    @ApiStatus.Internal
-    @Override
-    public boolean remove(@NotNull UUID player) {
-        if (this.players.containsKey(player)) {
-            this.players.remove(player);
-            return true;
-        }
-        return false;
+        // TODO: Fetch actual leader history
+        List<UUID> leaderList = List.of(leader);
+        return new GuildInfo(
+                name,
+                creationTime,
+                leaderList,
+                memberRanksByUuid
+        );
     }
 
     @Override
-    @ApiStatus.Internal
-    public @NotNull UUID uuidOf(@NotNull Player element) {
-        return element.getUuid();
+    public boolean add(@NotNull UUID member) {
+        return members.add(member);
+    }
+
+    @Override
+    public boolean remove(@NotNull UUID member) {
+        return members.remove(member);
+    }
+
+    @Override
+    public boolean add(@NotNull NarsionPlayer member) {
+        boolean added = members.add(member.getUuid());
+        onlineMembers.add(member);
+
+        return added;
+    }
+
+    @Override
+    public boolean remove(@NotNull NarsionPlayer member) {
+        boolean removed = members.remove(member.getUuid());
+        onlineMembers.remove(member);
+
+        return removed;
+    }
+
+    @Override
+    public @Nullable SocialRank getRank() {
+        return SOCIALS_MANAGER.getRank(uuid);
+    }
+
+    @Override
+    public @NotNull UUID getUuid() {
+        return uuid;
     }
 
     public record GuildInfo(

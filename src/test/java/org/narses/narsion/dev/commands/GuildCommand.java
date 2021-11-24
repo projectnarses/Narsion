@@ -12,6 +12,7 @@ import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.dev.DevServer;
 import org.narses.narsion.dev.player.DevPlayer;
+import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.social.Guild;
 import org.narses.narsion.social.SocialRank;
 import org.narses.narsion.social.SocialsManager;
@@ -57,36 +58,15 @@ public class GuildCommand extends Command {
         player.sendMessage("We weren't able to remove you from the guild."); // TODO: Move to config
     }
 
-    private CommandCondition hasEquivalentRank(@NotNull SocialRank rank) {
-        return (sender, str) -> {
-            SocialRank socialRank = SOCIALS_MANAGER.getRank(sender.asPlayer());
-            if (socialRank == null) {
-                return false;
-            }
-            return socialRank.permissionLevel() >= rank.permissionLevel();
-        };
-    }
-
-    private boolean playerHasGuild(CommandSender sender, String str) {
-        if (!(sender instanceof Player player)) {
-            return false;
-        }
-
-        return SOCIALS_MANAGER.getGuildFromPlayer(player) != null;
-    }
-
-    private boolean playerHasNoGuild(CommandSender sender, String str) {
-        if (sender instanceof Player) {
-            return !playerHasGuild(sender, str);
-        }
-        return false;
-    }
 
     // /guild info
     private void usageInfo(CommandSender sender, CommandContext context) {
-        Player player = sender.asPlayer();
+        if (!(sender instanceof Player player)) {
+            return;
+        }
+        NarsionPlayer narsionPlayer = server.wrap(player);
 
-        Guild guild = SOCIALS_MANAGER.getGuildFromPlayer(player);
+        Guild guild = SOCIALS_MANAGER.getGuildFromMember(narsionPlayer);
 
         if (guild == null) {
             player.sendMessage("You have no guild."); // TODO: Move to config
@@ -110,6 +90,34 @@ public class GuildCommand extends Command {
         }
 
         player.refreshCommands();
+    }
+
+    private boolean playerHasGuild(CommandSender sender, String str) {
+        if (!(sender instanceof Player player)) {
+            return false;
+        }
+        NarsionPlayer narsionPlayer = server.wrap(player);
+        return SOCIALS_MANAGER.getGuildFromMember(narsionPlayer) != null;
+    }
+
+    private boolean playerHasNoGuild(CommandSender sender, String str) {
+        return !playerHasGuild(sender, str);
+    }
+
+    private CommandCondition hasEquivalentRank(@NotNull SocialRank rank) {
+        return (sender, str) -> {
+            if (!(sender instanceof Player player)) {
+                return true;
+            }
+            // Get the narsion player
+            NarsionPlayer narsionPlayer = server.wrap(player);
+
+            SocialRank socialRank = SOCIALS_MANAGER.getRank(narsionPlayer);
+            if (socialRank == null) {
+                return false;
+            }
+            return socialRank.permissionLevel() >= rank.permissionLevel();
+        };
     }
 
 }

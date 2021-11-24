@@ -5,10 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.NarsionServer;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SocialsManager {
 
@@ -18,78 +15,115 @@ public class SocialsManager {
         this.server = server;
     }
 
-    private final Map<UUID, Guild> guildUuidToGuild = new HashMap<>();
-    private final Map<UUID, Nation> nationUuidToNation = new HashMap<>();
-    private final Map<UUID, Nation> guildToNation = new HashMap<>();
-    private final Map<UUID, Guild> playerToGuild = new HashMap<>();
+    // Social ranks and members
+    private final Map<UUID, SocialRank> socialRanks = new HashMap<>();
 
-    public @Nullable SocialRank getRank(@NotNull Player player) {
-        Guild someGuild = getGuildFromPlayer(player);
-        if (someGuild == null) {
-            return null;
-        }
-        return someGuild.getRank(player);
+    // Loaded member groups
+    private final Map<UUID, Guild> loadedGuilds = new HashMap<>();
+    private final Map<UUID, Nation> loadedNations = new HashMap<>();
+
+    // Cached relationships
+    private final Map<UUID, UUID> player2Guild = new HashMap<>();
+    private final Map<UUID, UUID> guild2Nation = new HashMap<>();
+
+    /**
+     * Gets the rank of the social member
+     * @param member the member to get the rank of
+     * @return the rank of the member
+     */
+    public @Nullable SocialRank getRank(@NotNull SocialMember member) {
+        return this.getRank(member.getUuid());
     }
 
-    public @Nullable SocialRank getRank(@NotNull Guild guild) {
-        Nation someNation = this.getNationFromGuild(guild);
-        if (someNation == null) {
-            return null;
-        }
-        return someNation.getRank(guild);
+    /**
+     * Gets the rank associated with the social member
+     * @param member the member to get the rank of
+     * @return the rank of the member
+     */
+    public @Nullable SocialRank getRank(@NotNull UUID member) {
+        return socialRanks.get(member);
     }
 
+    /**
+     * Creates a new guild and uploads it to the database
+     * @param name the name of the guild
+     * @param leader the leader of the guild
+     * @param players the players of the guild
+     * @return the guild object
+     */
     public @NotNull Guild createGuild(@NotNull String name, @NotNull Player leader, Player... players) {
         UUID[] uuids = Arrays.stream(players).map(Player::getUuid).toArray(UUID[]::new);
-        return createGuild(name, leader.getUuid(), uuids);
+        return loadGuild(UUID.randomUUID(), name, leader.getUuid(), uuids);
     }
 
-    public @NotNull Guild createGuild(@NotNull String name, @NotNull UUID leader, UUID... players) {
-        Guild guild = new Guild(server, name, UUID.randomUUID(), leader, players);
+    /**
+     * Loads a new guild into the manager
+     * @param guildUuid the guild uuid
+     * @param name the guild name
+     * @param leader the guild leader
+     * @param players the guild players
+     * @return the guild object
+     */
+    public @NotNull Guild loadGuild(@NotNull UUID guildUuid, @NotNull String name, @NotNull UUID leader, UUID... players) {
+        Guild guild = new Guild(server, name, guildUuid, leader, players);
+        loadedGuilds.put(guildUuid, guild);
 
-        guildUuidToGuild.put(guild.getUuid(), guild);
-        playerToGuild.put(leader, guild);
+        // Add leader
+        addPlayerToGuild(leader, guildUuid, SocialRank.LEADER);
+
+        // Add members
         for (UUID player : players) {
-            playerToGuild.put(player, guild);
+            addPlayerToGuild(player, guildUuid, getDefaultRank());
         }
-
         return guild;
     }
 
     /**
-     * Gets the guild object associated with the player
-     * @param player player to get the guild object from
-     * @return guild if found, null if else
+     * Gets the default social rank
+     * @return the default social rank
      */
-    public @Nullable Guild getGuildFromPlayer(@NotNull UUID player) {
-        return playerToGuild.get(player);
+    public @NotNull SocialRank getDefaultRank() {
+        return SocialRank.MEMBER;
     }
 
     /**
-     * Gets the guild object associated with the player
-     * @param player player to get the guild object from
+     * Gets the guild object associated with the member
+     * @param member member to get the guild object from
      * @return guild if found, null if else
      */
-    public @Nullable Guild getGuildFromPlayer(@NotNull Player player) {
-        return getGuildFromPlayer(player.getUuid());
+    public @Nullable Guild getGuildFromMember(@NotNull SocialMember member) {
+        return getGuildFromMember(member.getUuid());
+    }
+
+    /**
+     * Gets the guild object associated with the member
+     * @param member member to get the guild object from
+     * @return guild if found, null if else
+     */
+    public @Nullable Guild getGuildFromMember(@NotNull UUID member) {
+        UUID guild = player2Guild.get(member);
+        if (guild == null) {
+            return null;
+        }
+        return loadedGuilds.get(guild);
     }
 
     /**
      * Gets the guild associated with this uuid
-     * @param guildUuid the guild uuid
+     * @param guild the guild uuid
      * @return guild if found, null if else
      */
-    public @Nullable Guild getGuildFromUuid(@NotNull UUID guildUuid) {
-        return guildUuidToGuild.get(guildUuid);
+    public @Nullable Guild getGuildFromUuid(@NotNull UUID guild) {
+        return loadedGuilds.get(guild);
     }
 
     /**
      * Gets the nation associated with this uuid
-     * @param nationUuid the nation uuid
+     * @param nation the nation
      * @return nation if found, null if else
      */
-    public @Nullable Nation getNationFromUuid(@NotNull UUID nationUuid) {
-        return nationUuidToNation.get(nationUuid);
+    public @Nullable Nation getNationFromUuid(@NotNull UUID nation) {
+        return loadedNations.get(nation);
     }
 
     /**
@@ -103,11 +137,15 @@ public class SocialsManager {
 
     /**
      * Gets the nation associated with this guild
-     * @param guildUuid the guild uuid
+     * @param guild the guild uuid
      * @return nation if found, null if else
      */
-    public @Nullable Nation getNationFromGuild(@NotNull UUID guildUuid) {
-        return guildToNation.get(guildUuid);
+    public @Nullable Nation getNationFromGuild(@NotNull UUID guild) {
+        UUID nation = guild2Nation.get(guild);
+        if (nation == null) {
+            return null;
+        }
+        return loadedNations.get(nation);
     }
 
     /**
@@ -125,12 +163,13 @@ public class SocialsManager {
      * @return true if successful, false otherwise
      */
     public boolean removePlayerFromGuild(@NotNull UUID player) {
-        Guild guild = getGuildFromPlayer(player);
+        Guild guild = getGuildFromMember(player);
         if (guild == null) {
             return false;
         }
         if (guild.remove(player)) {
-            this.playerToGuild.remove(player);
+            this.player2Guild.remove(player);
+            this.socialRanks.remove(player);
         }
         return false;
     }
@@ -141,8 +180,8 @@ public class SocialsManager {
      * @param guild the guild to add to
      * @return true if successful, false otherwise
      */
-    public boolean addPlayerToGuild(@NotNull Player player, @NotNull Guild guild) {
-        return addPlayerToGuild(player.getUuid(), guild.getUuid());
+    public boolean addPlayerToGuild(@NotNull Player player, @NotNull Guild guild, @NotNull SocialRank rank) {
+        return addPlayerToGuild(player.getUuid(), guild.getUuid(), rank);
     }
 
     /**
@@ -151,17 +190,39 @@ public class SocialsManager {
      * @param guild the guild to add to
      * @return true if successful, false otherwise
      */
-    public boolean addPlayerToGuild(@NotNull UUID player, @NotNull UUID guild) {
+    public boolean addPlayerToGuild(@NotNull UUID player, @NotNull UUID guild, @NotNull SocialRank rank) {
         Guild guildObject = getGuildFromUuid(guild);
         if (guildObject == null) {
             return false;
         }
-        if (getGuildFromPlayer(player) != null) {
+        if (getGuildFromMember(player) != null) {
             return false;
         }
         if (guildObject.add(player)) {
-            this.playerToGuild.put(player, guildObject);
+            this.player2Guild.put(player, guild);
+            setRank(player, rank);
+            return true;
         }
         return false;
+    }
+
+    /**
+     * Sets the social rank of this player
+     * @param member the member to set the rank of
+     * @param rank the rank to set
+     * @return true if rank was changed, false otherwise
+     */
+    public boolean setRank(UUID member, SocialRank rank) {
+        return socialRanks.put(member, rank) == rank;
+    }
+
+    /**
+     * Sets the social rank of this player
+     * @param member the member to set the rank of
+     * @param rank the rank to set
+     * @return true if rank was changed, false otherwise
+     */
+    public boolean setRank(SocialMember member, SocialRank rank) {
+        return this.setRank(member.getUuid(), rank);
     }
 }
