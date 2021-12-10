@@ -19,14 +19,14 @@ class GuildInviteCommand extends GuildRequiredCommand {
         super(server, "invite");
         this.setRankPredicate(SocialRank::hasModPerms);
         this.addSyntax(
-                this::handleString,
+                this::handle,
                 Entity("player")
                         .onlyPlayers(true)
                         .singleEntity(true)
         );
     }
 
-    private void handleString(CommandSender sender, CommandContext context) {
+    private void handle(CommandSender sender, CommandContext context) {
         Guild guild = getGuild(sender);
         EntityFinder finder = context.get("player");
         Player playerToInvite = finder.findFirstPlayer(sender);

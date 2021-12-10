@@ -43,12 +43,12 @@ guild {
     uninvite <player> - done
 
     // Administrative rank commands
-    promote <player>
-    demote <player>
-    ban <player>
-    unban <player>
-    banip <player>
-    unbanip <player>
+    promote <player> <rank> - done
+    demote <player> <rank> - done
+    ban <player> - done
+    unban <player> - done
+    banip <player> - done
+    unbanip <player> - done
 
     // Warmongering rank commands
     war {
@@ -68,13 +68,13 @@ guild {
 public class GuildCommand extends Command {
 
     private final @NotNull NarsionServer server;
-    private final @NotNull SocialsManager SOCIALS_MANAGER;
+    private final @NotNull SocialsManager manager;
 
     public GuildCommand(@NotNull NarsionServer server) {
         super("guild", "g", "gld");
 
         this.server = server;
-        this.SOCIALS_MANAGER = server.getSocialsManager();
+        this.manager = server.getSocialsManager();
 
 
         // Global guild commands
@@ -94,7 +94,15 @@ public class GuildCommand extends Command {
         this.addSubcommand(new GuildInviteCommand(server));
         this.addSubcommand(new GuildUninviteCommand(server));
 
-        // TODO: Administrative rank commands
+        // Administrative rank commands
+        this.addSubcommand(new GuildPromoteCommand(server));
+        this.addSubcommand(new GuildDemoteCommand(server));
+        this.addSubcommand(new GuildBanCommand(server));
+        this.addSubcommand(new GuildUnbanCommand(server));
+        this.addSubcommand(new GuildBanipCommand(server));
+        this.addSubcommand(new GuildUnbanipCommand(server));
+
+        // TODO: Warmongering rank commands
 
         // When not in a guild:
         this.addSubcommand(new GuildCreateCommand(server));

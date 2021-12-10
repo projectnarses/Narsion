@@ -13,49 +13,49 @@ import java.util.UUID;
 
 import static net.minestom.server.command.builder.arguments.ArgumentType.Entity;
 
-class GuildKickCommand extends GuildRequiredCommand {
+class GuildBanCommand extends GuildRequiredCommand {
 
-    public GuildKickCommand(@NotNull NarsionServer server) {
-        super(server, "kick");
-        this.setRankPredicate(SocialRank::hasModPerms);
+    public GuildBanCommand(@NotNull NarsionServer server) {
+        super(server, "ban");
+        this.setRankPredicate(SocialRank::hasAdminPerms);
         this.addSyntax(
-                this::handleString,
+                this::handlePlayer,
                 Entity("player")
                         .onlyPlayers(true)
                         .singleEntity(true)
         );
     }
 
-    private void handleString(CommandSender sender, CommandContext context) {
+    private void handlePlayer(CommandSender sender, CommandContext context) {
         Guild guild = getGuild(sender);
         EntityFinder finder = context.get("player");
         var manager = server.getSocialsManager();
-        Player playerToKick = finder.findFirstPlayer(sender);
+        Player playerToBan = finder.findFirstPlayer(sender);
 
-        if (playerToKick == null) {
+        if (playerToBan == null) {
             sender.sendMessage("Player not found.");
             return;
         }
 
-        UUID playerToKickUuid = playerToKick.getUuid();
+        UUID playerToBanUuid = playerToBan.getUuid();
 
-        if (!guild.contains(playerToKickUuid)) {
+        if (!guild.contains(playerToBanUuid)) {
             sender.sendMessage("Player is not in your guild.");
             return;
         }
 
-        SocialRank kickRank = manager.getRank(playerToKickUuid);
+        SocialRank kickRank = manager.getRank(playerToBanUuid);
 
         if (kickRank == null) {
             throw new IllegalStateException("Player rank is null");
         }
 
         if (kickRank.isLeader()) {
-            sender.sendMessage("You can't kick a leader.");
+            sender.sendMessage("You can't ban a leader.");
             return;
         }
 
-        manager.kickMemberFromGroup(playerToKickUuid);
+        manager.banMemberFromGroup(playerToBanUuid, guild.getUuid());
 
         if (sender instanceof Player player) {
             SocialRank rank = manager.getRank(player.getUuid());
@@ -63,13 +63,14 @@ class GuildKickCommand extends GuildRequiredCommand {
             if (rank == null) {
                 throw new IllegalStateException("Rank is null");
             }
+
             if (!kickRank.isLowerThan(rank)) {
-                sender.sendMessage("You can't kick a player with a rank higher or equal to yours.");
+                sender.sendMessage("You can't ban a player with a rank higher or equal to yours.");
             }
 
-            playerToKick.sendMessage("You have been kicked from the guild " + guild.getName() + " by " + player.getUsername());
+            playerToBan.sendMessage("You have been ban from the guild " + guild.getName() + " by " + player.getUsername());
         } else {
-            playerToKick.sendMessage("You have been invited to the guild " + guild.getName() + ".");
+            playerToBan.sendMessage("You have been ban from the guild " + guild.getName() + ".");
         }
     }
 }

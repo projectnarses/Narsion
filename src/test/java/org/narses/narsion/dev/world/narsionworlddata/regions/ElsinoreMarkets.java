@@ -9,6 +9,7 @@ import org.narses.narsion.region.StaticRegion;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Elsinore Markets are designed to be the highest value territory in the game as they are situated directly next to the
@@ -20,6 +21,9 @@ import java.util.Set;
 public class ElsinoreMarkets {
 	public enum North implements StaticRegion {
 		INSTANCE;
+
+		// TODO: Read this uuid from database/config
+		private final UUID uuid = UUID.randomUUID();
 
 		private final Area3dPolygon area = Area3dPolygon.of(
 				new Pos(2909, 256, -86), new Pos(2900, 0, -80),
@@ -70,6 +74,11 @@ public class ElsinoreMarkets {
 		}
 
 		@Override
+		public @NotNull UUID getUuid() {
+			return uuid;
+		}
+
+		@Override
 		public @NotNull Set<Player> getViewers() {
 			return viewers;
 		}
@@ -77,6 +86,9 @@ public class ElsinoreMarkets {
 
 	public enum South implements StaticRegion {
 		INSTANCE;
+
+		// TODO: Read this uuid from database/config
+		private final UUID uuid = UUID.randomUUID();
 
 		private final Area3dPolygon area = Area3dPolygon.of(
 				new Pos(2910, 0, -77), new Pos(2910, 256, -77),
@@ -126,6 +138,11 @@ public class ElsinoreMarkets {
 		@Override
 		public @NotNull Set<Player> getViewers() {
 			return viewers;
+		}
+
+		@Override
+		public @NotNull UUID getUuid() {
+			return uuid;
 		}
 	}
 }

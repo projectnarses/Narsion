@@ -22,7 +22,9 @@ import org.narses.narsion.dev.world.blockhandlers.StaticBlocks;
 import org.narses.narsion.dev.world.narsionworlddata.npcs.NarsionNPCs;
 import org.narses.narsion.dev.world.narsionworlddata.regions.NarsionRegions;
 import org.narses.narsion.origin.OriginProvider;
+import org.narses.narsion.region.Region;
 import org.narses.narsion.region.RegionManager;
+import org.narses.narsion.util.Equivalent;
 
 import java.io.File;
 import java.util.Arrays;
@@ -68,7 +70,12 @@ public class DevServer extends NarsionServer {
         // instanceContainer.setChunkLoader(new AnvilLoader("world"));
 
         // Setup regions
-        this.regionManager = new RegionManager(this, NarsionRegions.values());
+        this.regionManager = new RegionManager(
+                this,
+                Arrays.stream(NarsionRegions.values())
+                        .map(Equivalent::getEquivalent)
+                        .toArray(Region[]::new)
+        );
 
         // Spawn all npcs
         for (NarsionNPCs npc : NarsionNPCs.values()) {

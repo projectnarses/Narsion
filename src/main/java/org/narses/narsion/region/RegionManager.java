@@ -24,10 +24,10 @@ import java.util.Set;
 
 public record RegionManager(
         @NotNull NarsionServer server,
-        @NotNull Region[] regions
+        @NotNull Region... regions
 ) {
 
-    public RegionManager(@NotNull NarsionServer server, @NotNull Region[] regions) {
+    public RegionManager(@NotNull NarsionServer server, @NotNull Region... regions) {
         this.server = server;
         this.regions = regions;
 

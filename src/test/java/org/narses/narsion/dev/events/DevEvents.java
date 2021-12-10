@@ -22,6 +22,7 @@ import org.narses.narsion.events.PlayerSwitchAbilityEvent;
 import org.narses.narsion.inventory.TradeInventory;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.region.Region;
+import org.narses.narsion.util.Equivalent;
 
 import java.util.Objects;
 
@@ -70,8 +71,8 @@ public class DevEvents {
             return;
         }
 
-        for (final Region region : NarsionRegions.values()) {
-            region.addViewer(player);
+        for (final Equivalent<Region> region : NarsionRegions.values()) {
+            region.getEquivalent().addViewer(player);
         }
 
         NarsionQuests.EXAMPLE.getEquivalent().embark(server, player);

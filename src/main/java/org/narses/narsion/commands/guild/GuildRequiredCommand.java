@@ -9,15 +9,18 @@ import org.narses.narsion.commands.NarsionCommand;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.social.Guild;
 import org.narses.narsion.social.SocialRank;
+import org.narses.narsion.social.SocialsManager;
 
 import java.util.function.Predicate;
 
 class GuildRequiredCommand extends NarsionCommand<NarsionServer> {
 
     private @Nullable Predicate<SocialRank> rankPredicate;
+    protected final SocialsManager manager;
 
     public GuildRequiredCommand(@NotNull NarsionServer server, @NotNull String name, @NotNull String... alias) {
         super(server, name, alias);
+        this.manager = server.getSocialsManager();
         this.setCondition(this::hasGuildCondition);
     }
 

@@ -6,11 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.region.Region;
 import org.narses.narsion.region.RegionType;
+import org.narses.narsion.util.Equivalent;
 
 import java.util.Set;
 import java.util.function.Supplier;
 
-public enum NarsionRegions implements Region {
+public enum NarsionRegions implements Equivalent<Region> {
     ELSINORE(Elsinore.INSTANCE),
     ELSINORE_SOUTHERN_MARKETS(ElsinoreMarkets.South.INSTANCE),
     ELSINORE_NORTHERN_MARKETS(ElsinoreMarkets.North.INSTANCE),
@@ -23,47 +24,7 @@ public enum NarsionRegions implements Region {
     }
 
     @Override
-    public @NotNull String getName() {
-        return region.getName();
-    }
-
-    @Override
-    public boolean getClaimable() {
-        return region.getClaimable();
-    }
-
-    @Override
-    public @NotNull RegionType getType() {
-        return region.getType();
-    }
-
-    @Override
-    public @NotNull Area3d getArea() {
-        return region.getArea();
-    }
-
-    @Override
-    public void onPlayerEnter(@NotNull NarsionServer server, @NotNull Player player) {
-        region.onPlayerEnter(server, player);
-    }
-
-    @Override
-    public void onPlayerExit(@NotNull NarsionServer server, @NotNull Player player) {
-        region.onPlayerExit(server, player);
-    }
-
-    @Override
-    public boolean addViewer(@NotNull Player player) {
-        return region.addViewer(player);
-    }
-
-    @Override
-    public boolean removeViewer(@NotNull Player player) {
-        return region.removeViewer(player);
-    }
-
-    @Override
-    public @NotNull Set<Player> getViewers() {
-        return region.getViewers();
+    public @NotNull Region getEquivalent() {
+        return region;
     }
 }

@@ -100,6 +100,6 @@ public class NarsionPlayer implements TagReadable, TagWritable, SocialMember {
     }
 
     public @Nullable Guild getGuild() {
-        return server.getSocialsManager().getGuildFromMember(this);
+        return server.getSocialsManager().getGroupFromMember(this);
     }
 }

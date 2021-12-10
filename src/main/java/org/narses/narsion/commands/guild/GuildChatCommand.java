@@ -25,12 +25,11 @@ class GuildChatCommand extends GuildRequiredCommand {
         if (!(sender instanceof Player player)) {
             throw new IllegalArgumentException("Only players can use this command.");
         }
-        NarsionPlayer narsionPlayer = server.wrap(player);
 
         String[] chat = context.get("chat");
 
-        guild.onChat(new SocialGroup.GroupChatMessage<>(
-                narsionPlayer,
+        guild.onChat(new SocialGroup.Chat(
+                player.getUuid(),
                 String.join(" ", chat)
         ));
     }

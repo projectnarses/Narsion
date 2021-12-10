@@ -58,15 +58,16 @@ class GuildWarnCommand extends GuildRequiredCommand {
             return;
         }
 
-        manager.removePlayerFromGuild(playerToWarnUuid);
-
         if (sender instanceof Player player) {
             SocialRank rank = manager.getRank(player.getUuid());
 
             if (rank == null) {
                 throw new IllegalStateException("Rank is null");
-            } else if (warnRank.permissionLevel() >= rank.permissionLevel()) {
+            }
+
+            if (!warnRank.isLowerThan(rank)) {
                 sender.sendMessage("You can't warn a player with a rank higher or equal to yours.");
+                return;
             }
 
             playerToInvite.sendMessage("[Guild] You have been warned by " + player.getUsername() + ": " + String.join(" ", reason));

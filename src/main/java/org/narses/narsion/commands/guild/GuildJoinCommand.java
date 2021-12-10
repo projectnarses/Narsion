@@ -48,7 +48,7 @@ class GuildJoinCommand extends GuildlessRequiredCommand {
         }
 
         // Finally, join the guild
-        manager.addPlayerToGuild(player, guild, manager.getDefaultRank());
+        manager.addMemberToGroup(player.getUuid(), guild.getUuid(), manager.getDefaultRank());
         player.sendMessage("You joined the guild " + guild.getName());
     }
 }

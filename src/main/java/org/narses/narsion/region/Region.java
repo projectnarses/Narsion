@@ -8,14 +8,15 @@ import org.narses.narsion.NarsionServer;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public interface Region extends Viewable {
 	public static Region of(
 			@NotNull final String name,
-			final boolean claimable,
 			@NotNull final RegionType type,
 			@NotNull final Area3d polygon
 	) {
+		UUID uuid = UUID.randomUUID();
 		return new Region() {
 
 			private final Set<Player> viewers = new HashSet<>();
@@ -26,11 +27,6 @@ public interface Region extends Viewable {
 			}
 
 			@Override
-			public boolean getClaimable() {
-				return claimable;
-			}
-
-			@Override
 			public @NotNull RegionType getType() {
 				return type;
 			}
@@ -38,6 +34,11 @@ public interface Region extends Viewable {
 			@Override
 			public @NotNull Area3d getArea() {
 				return polygon;
+			}
+
+			@Override
+			public @NotNull UUID getUuid() {
+				return uuid;
 			}
 
 			@Override
@@ -59,11 +60,15 @@ public interface Region extends Viewable {
 
 	public @NotNull String getName();
 
-	public boolean getClaimable();
+	public default boolean getClaimable() {
+		return this instanceof ClaimableRegion;
+	};
 
 	public @NotNull RegionType getType();
 
 	public @NotNull Area3d getArea();
+
+	public @NotNull UUID getUuid();
 
 	public default void onPlayerEnter(@NotNull NarsionServer server, @NotNull Player player) {
 	}

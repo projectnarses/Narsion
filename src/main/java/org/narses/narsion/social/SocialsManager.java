@@ -7,7 +7,9 @@ import org.narses.narsion.NarsionServer;
 import org.narses.narsion.player.NarsionPlayer;
 import org.narses.narsion.util.StringUtils;
 
+import java.net.SocketAddress;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SocialsManager {
 
@@ -21,13 +23,10 @@ public class SocialsManager {
     private final Map<UUID, SocialRank> socialRanks = new HashMap<>();
 
     // Loaded social groups
-    private final Map<UUID, Guild> loadedGuilds = new HashMap<>();
-    private final Map<UUID, Nation> loadedNations = new HashMap<>();
-    private final Map<UUID, SocialGroup<?, ?>> loadedGroups = new HashMap<>();
+    private final Map<UUID, SocialGroup> loadedGroups = new HashMap<>();
 
     // Cached relationships
-    private final Map<UUID, UUID> player2Guild = new HashMap<>();
-    private final Map<UUID, UUID> guild2Nation = new HashMap<>();
+    private final Map<UUID, UUID> member2Group = new HashMap<>();
 
     /**
      * Gets the rank of the social member
@@ -69,15 +68,14 @@ public class SocialsManager {
      */
     public @NotNull Guild loadGuild(@NotNull UUID guildUuid, @NotNull String name, @NotNull UUID leader, UUID... players) {
         Guild guild = new Guild(server, name, guildUuid, leader);
-        loadedGuilds.put(guildUuid, guild);
         loadedGroups.put(guildUuid, guild);
 
         // Add leader
-        addPlayerToGuild(leader, guildUuid, SocialRank.PEASANT);
+        addMemberToGroup(leader, guildUuid, SocialRank.EMPEROR);
 
         // Add members
         for (UUID player : players) {
-            addPlayerToGuild(player, guildUuid, getDefaultRank());
+            addMemberToGroup(player, guildUuid, getDefaultRank());
         }
         return guild;
     }
@@ -95,8 +93,8 @@ public class SocialsManager {
      * @param member member to get the guild object from
      * @return guild if found, null if else
      */
-    public @Nullable Guild getGuildFromMember(@NotNull SocialMember member) {
-        return getGuildFromMember(member.getUuid());
+    public @Nullable <E extends SocialGroup> E getGroupFromMember(@NotNull SocialMember member) {
+        return getGroupFromMember(member.getUuid());
     }
 
     /**
@@ -104,106 +102,76 @@ public class SocialsManager {
      * @param member member to get the guild object from
      * @return guild if found, null if else
      */
-    public @Nullable Guild getGuildFromMember(@NotNull UUID member) {
-        UUID guild = player2Guild.get(member);
-        if (guild == null) {
+    @SuppressWarnings("unchecked")
+    public @Nullable <E extends SocialGroup> E getGroupFromMember(@NotNull UUID member) {
+        UUID group = member2Group.get(member);
+        if (group == null) {
             return null;
         }
-        return loadedGuilds.get(guild);
-    }
-
-    /**
-     * Gets the guild associated with this uuid
-     * @param guild the guild uuid
-     * @return guild if found, null if else
-     */
-    public @Nullable Guild getGuildFromUuid(@NotNull UUID guild) {
-        return loadedGuilds.get(guild);
-    }
-
-    /**
-     * Gets the nation associated with this uuid
-     * @param nation the nation
-     * @return nation if found, null if else
-     */
-    public @Nullable Nation getNationFromUuid(@NotNull UUID nation) {
-        return loadedNations.get(nation);
-    }
-
-    /**
-     * Gets the nation associated with this guild
-     * @param guild the guild
-     * @return nation if found, null if else
-     */
-    public @Nullable Nation getNationFromGuild(@NotNull Guild guild) {
-        return getNationFromGuild(guild.getUuid());
-    }
-
-    /**
-     * Gets the nation associated with this guild
-     * @param guild the guild uuid
-     * @return nation if found, null if else
-     */
-    public @Nullable Nation getNationFromGuild(@NotNull UUID guild) {
-        UUID nation = guild2Nation.get(guild);
-        if (nation == null) {
+        Object groupObj = loadedGroups.get(group);
+        if (groupObj == null) {
             return null;
         }
-        return loadedNations.get(nation);
+        return (E) groupObj;
     }
 
     /**
-     * Removes this player from their guild.
-     * @param player the player to remove
-     * @return true if successful, false otherwise
+     * Gets the group associated with this uuid
+     * @param group the group uuid
+     * @return group if found, null if else
      */
-    public boolean removePlayerFromGuild(@NotNull Player player) {
-        return removePlayerFromGuild(player.getUuid());
+    @SuppressWarnings("unchecked")
+    public @Nullable <E extends SocialGroup> E getGroupFromUuid(@NotNull UUID group) {
+        Object groupObj = loadedGroups.get(group);
+        if (groupObj == null) {
+            return null;
+        }
+        return (E) groupObj;
     }
 
     /**
-     * Removes this player from their guild.
-     * @param player the player to remove
+     * Removes this member from their group.
+     * @param member the member to remove
      * @return true if successful, false otherwise
      */
-    public boolean removePlayerFromGuild(@NotNull UUID player) {
-        Guild guild = getGuildFromMember(player);
-        if (guild == null) {
+    public boolean kickMemberFromGroup(@NotNull UUID member) {
+        SocialGroup group = getGroupFromMember(member);
+        if (group == null) {
             return false;
         }
-        if (guild.remove(player)) {
-            this.player2Guild.remove(player);
-            setRank(player, null);
-            guild.onLeave(player);
+        if (group.remove(member)) {
+            member2Group.remove(member);
+            setRank(member, null);
+            group.onLeave(new SocialGroup.Leave(member));
         }
         return false;
     }
 
     /**
      * Adds this player to the guild.
-     * @param player the player to add
+     * @param member the player to add
      * @param guild the guild to add to
      * @return true if successful, false otherwise
      */
-    public boolean addPlayerToGuild(@NotNull Player player, @NotNull Guild guild, @NotNull SocialRank rank) {
-        return addPlayerToGuild(player.getUuid(), guild.getUuid(), rank);
+    public boolean addMemberToGroup(@NotNull SocialMember member, @NotNull Guild guild, @NotNull SocialRank rank) {
+        return addMemberToGroup(member.getUuid(), guild.getUuid(), rank);
     }
 
     /**
-     * Adds this player to the guild.
-     * @param player the player to add
+     * Adds this member to the guild.
+     * @param member the member to add
      * @param guild the guild to add to
      * @return true if successful, false otherwise
      */
-    public boolean addPlayerToGuild(@NotNull UUID player, @NotNull UUID guild, @NotNull SocialRank rank) {
-        Guild guildObject = getGuildFromUuid(guild);
+    public boolean addMemberToGroup(@NotNull UUID member, @NotNull UUID guild, @NotNull SocialRank rank) {
+        Guild guildObject = getGroupFromUuid(guild);
         if (guildObject == null) {
             return false;
         }
-        if (guildObject.add(player)) {
-            this.player2Guild.put(player, guild);
-            setRank(player, rank);
-            guildObject.onJoin(player);
+        if (guildObject.add(member)) {
+            this.member2Group.put(member, guild);
+            setRank(member, rank);
+            guildObject.onJoin(new SocialGroup.Join(member));
             return true;
         }
         return false;
@@ -233,16 +201,22 @@ public class SocialsManager {
      * Gets all the guilds
      * @return all the guilds
      */
-    public @NotNull Map<UUID, Guild> getGuilds() {
-        return Collections.unmodifiableMap(loadedGuilds);
+    public @NotNull Set<Guild> getGuilds() {
+        return loadedGroups.values().stream()
+                .filter(Guild.class::isInstance)
+                .map(Guild.class::cast)
+                .collect(Collectors.toSet());
     }
 
     /**
      * Gets all the nations
      * @return all the nations
      */
-    public @NotNull Map<UUID, Nation> getNations() {
-        return Collections.unmodifiableMap(loadedNations);
+    public @NotNull Set<Nation> getNations() {
+        return loadedGroups.values().stream()
+                .filter(Nation.class::isInstance)
+                .map(Nation.class::cast)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -251,42 +225,101 @@ public class SocialsManager {
      * @return the guild if found, null if else
      */
     public @Nullable Guild getClosestGuild(@NotNull String name) {
-        return StringUtils.getClosestNamed(name, loadedGuilds.values(), 0.5, Guild::getName);
+        return StringUtils.getClosestNamed(name, getGuilds(), 0.5, Guild::getName);
     }
 
     /**
      * Invites a member to a group
-     * @param playerToInviteUuid the player to invite
+     * @param member the member to invite
      * @param group the group to invite to
      */
-    public void inviteMemberToGroup(UUID playerToInviteUuid, UUID group) {
-        SocialGroup<?, ?> groupObject = getGroupFromUuid(group);
+    public void inviteMemberToGroup(UUID member, UUID group) {
+        SocialGroup groupObject = getGroupFromUuid(group);
         if (groupObject == null) {
             return;
         }
 
-        if (groupObject.getInvites().add(playerToInviteUuid)) {
-            groupObject.onInvite(group);
+        if (groupObject.getInvites().add(member)) {
+            groupObject.onInvite(new SocialGroup.Invite(member));
         }
-    }
-
-    private @Nullable SocialGroup<?, ?> getGroupFromUuid(@NotNull UUID uuid) {
-        return loadedGroups.get(uuid);
     }
 
     /**
      * Remove an invite from a group
-     * @param playerToUninviteUuid the player to uninvite
+     * @param member the member to uninvite
      * @param group the group to uninvite from
      */
-    public void uninviteMemberToGroup(UUID playerToUninviteUuid, UUID group) {
-        SocialGroup<?, ?> groupObject = getGroupFromUuid(group);
+    public void uninviteMemberToGroup(UUID member, UUID group) {
+        SocialGroup groupObject = getGroupFromUuid(group);
+        if (groupObject == null) {
+            throw new IllegalArgumentException("Group does not exist");
+        }
+        if (groupObject.getInvites().remove(member)) {
+            groupObject.onUninvite(new SocialGroup.Uninvite(member));
+        }
+    }
+
+    /**
+     * Bans the member from the group
+     * @param member the member to ban
+     */
+    public void banMemberFromGroup(UUID member, UUID group) {
+        SocialGroup groupObject = getGroupFromUuid(member);
         if (groupObject == null) {
             return;
         }
 
-        if (groupObject.getInvites().remove(playerToUninviteUuid)) {
-            groupObject.onUninvite(group);
+        // Kick first
+        kickMemberFromGroup(member);
+
+        // Now try ban
+        if (groupObject.onBan(new SocialGroup.Ban(member))) {
+            groupObject.addBan(member);
+        }
+    }
+
+    /**
+     * Unbans the member from the group
+     * @param member the member to unban
+     * @param group the group to unban from
+     */
+    public void unbanMemberFromGroup(UUID member, UUID group) {
+        SocialGroup groupObject = getGroupFromUuid(group);
+        if (groupObject == null) {
+            return;
+        }
+        if (groupObject.onUnban(new SocialGroup.Unban(member))) {
+            groupObject.removeBan(member);
+        }
+    }
+
+    /**
+     * Bans the ip from the group
+     * @param ip the ip to ban
+     * @param group the group to ban from
+     */
+    public void banIpFromGroup(SocketAddress ip, UUID group) {
+        SocialGroup groupObject = getGroupFromUuid(group);
+        if (groupObject == null) {
+            return;
+        }
+        if (groupObject.onBanip(new SocialGroup.Banip(ip))) {
+            groupObject.addBanip(ip);
+        }
+    }
+
+    /**
+     * Unbans the ip from the group
+     * @param ip the ip to unban
+     * @param group the group to unban from
+     */
+    public void unbanIpFromGroup(SocketAddress ip, UUID group) {
+        SocialGroup groupObject = getGroupFromUuid(group);
+        if (groupObject == null) {
+            return;
+        }
+        if (groupObject.onUnbanip(new SocialGroup.Unbanip(ip))) {
+            groupObject.removeBanip(ip);
         }
     }
 }

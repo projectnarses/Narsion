@@ -6,16 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.narses.narsion.classes.abilities.Ability;
 
 public record PlayerAbilityEvent(
-        @NotNull Player player,
-        @NotNull Ability ability
+        @NotNull Player getPlayer,
+        @NotNull Ability getAbility
 ) implements PlayerEvent {
-
-    @Override
-    public @NotNull Player getPlayer() {
-        return player;
-    }
-
-    public @NotNull Ability getAbility() {
-        return ability;
-    }
 }

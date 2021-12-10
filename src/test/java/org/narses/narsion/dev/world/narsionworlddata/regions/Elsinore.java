@@ -14,6 +14,7 @@ import org.narses.narsion.region.StaticRegion;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Elsinore is the starter town
@@ -23,6 +24,9 @@ import java.util.Set;
  */
 public enum Elsinore implements StaticRegion {
 	INSTANCE;
+
+	// TODO: Read this uuid from database/config
+	private final UUID uuid = UUID.randomUUID();
 
 	private final Area3dPolygon area = Area3dPolygon.of(
 			new Pos(3056, 255, -26), new Pos(3056, 0, -26),
@@ -81,6 +85,11 @@ public enum Elsinore implements StaticRegion {
 	@Override
 	public @NotNull Area3dPolygon getArea() {
 		return area;
+	}
+
+	@Override
+	public @NotNull UUID getUuid() {
+		return uuid;
 	}
 
 	@Override
