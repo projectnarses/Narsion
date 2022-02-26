@@ -48,19 +48,16 @@ public class TradeInventory extends Inventory implements ClickableInventory {
         this.server = server;
         this.trades = trades;
 
-        TradeListPacket packet = new TradeListPacket();
-
-        packet.windowId = this.getWindowId();
-        packet.canRestock = true;
-        packet.experience = 0;
-        packet.regularVillager = true;
-        packet.villagerLevel = 1;
-
-        packet.trades = Arrays.stream(trades)
-                .map((trade) -> trade.apply(server))
-                .toArray(TradeListPacket.Trade[]::new);
-
-        this.TRADE_LIST_PACKET = packet;
+        this.TRADE_LIST_PACKET = new TradeListPacket(
+                getWindowId(),
+                Arrays.stream(trades)
+                        .map((trade) -> trade.apply(server))
+                        .toList(),
+                1,
+                0,
+                true,
+                true
+        );
     }
 
     @Override
@@ -220,25 +217,28 @@ public class TradeInventory extends Inventory implements ClickableInventory {
     ) implements Function<NarsionServer, TradeListPacket.Trade> {
         @Override
         public TradeListPacket.Trade apply(@NotNull NarsionServer server) {
-            TradeListPacket.Trade trade = new TradeListPacket.Trade();
+            ItemStack input = generateBundle(server, ingredients);
+            ItemStack output = generateBundle(server, result);
 
-            trade.inputItem1 = generateBundle(server, ingredients);
-            trade.result = generateBundle(server, result);
-            trade.tradeDisabled = false;
-            trade.exp = 0;
-            trade.maxTradeUsesNumber = Integer.MAX_VALUE;
-            trade.priceMultiplier = 0.0F;
-            trade.specialPrice = 0;
-            trade.demand = 0;
-
-            if (trade.inputItem1.getMaterial() == Material.BUNDLE) {
-                trade.inputItem1 = trade.inputItem1.withDisplayName(INGREDIENTS_DISPLAY_NAME);
+            if (input.getMaterial() == Material.BUNDLE) {
+                input = input.withDisplayName(INGREDIENTS_DISPLAY_NAME);
             }
-            if (trade.result.getMaterial() == Material.BUNDLE) {
-                trade.result = trade.result.withDisplayName(RESULT_DISPLAY_NAME);
+            if (output.getMaterial() == Material.BUNDLE) {
+                output = output.withDisplayName(RESULT_DISPLAY_NAME);
             }
 
-            return trade;
+            return new TradeListPacket.Trade(
+                    input,
+                    output,
+                    null,
+                    false,
+                    0,
+                    Integer.MAX_VALUE,
+                    0,
+                    0,
+                    0.0F,
+                    0
+            );
         }
     }
 }

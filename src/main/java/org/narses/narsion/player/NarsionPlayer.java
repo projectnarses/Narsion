@@ -7,6 +7,7 @@ import net.minestom.server.tag.TagWritable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jglrxavpok.hephaistos.nbt.NBTCompound;
+import org.jglrxavpok.hephaistos.nbt.mutable.MutableNBTCompound;
 import org.narses.narsion.NarsionServer;
 import org.narses.narsion.classes.PlayerClass;
 import org.narses.narsion.quest.Quest;
@@ -26,7 +27,7 @@ public class NarsionPlayer implements TagReadable, TagWritable, SocialMember {
     protected final @NotNull Player player;
 
     // Player data
-    private final @NotNull NBTCompound nbtData;
+    private final @NotNull MutableNBTCompound nbtData;
     private @NotNull PlayerClass playerClass;
 
     // Quests
@@ -37,7 +38,7 @@ public class NarsionPlayer implements TagReadable, TagWritable, SocialMember {
         this.player = player;
         this.server = server;
         this.playerClass = server.getPlayerClasses().WARRIOR;
-        this.nbtData = new NBTCompound();
+        this.nbtData = new MutableNBTCompound();
 
         // TODO: Read player data from database
         this.setTag(TAG_ABILITY_SELECTION_MODE, "SCROLL");

@@ -1,6 +1,7 @@
 package org.narses.narsion.npc;
 
 import com.extollit.gaming.ai.path.HydrazinePathFinder;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
@@ -86,15 +87,20 @@ public class NonPlayableCharacter extends LivingEntity implements NavigableEntit
     }
 
     private @NotNull PlayerInfoPacket generatePlayerAddInfo() {
-        PlayerInfoPacket packet = new PlayerInfoPacket(PlayerInfoPacket.Action.ADD_PLAYER);
-        packet.playerInfos = List.of(new PlayerInfoPacket.AddPlayer(uuid, name, GameMode.CREATIVE, 0));
-        return packet;
+        Component customName = getCustomName();
+        Component displayName = customName == null ? Component.text(name) : customName;
+
+        return new PlayerInfoPacket(
+                PlayerInfoPacket.Action.ADD_PLAYER,
+                List.of(new PlayerInfoPacket.AddPlayer(uuid, name, List.of(), GameMode.CREATIVE, 0, displayName))
+        );
     }
 
     private @NotNull PlayerInfoPacket generatePlayerHideInfo() {
-        PlayerInfoPacket packet = new PlayerInfoPacket(PlayerInfoPacket.Action.REMOVE_PLAYER);
-        packet.playerInfos = List.of(new PlayerInfoPacket.RemovePlayer(uuid));
-        return packet;
+        return new PlayerInfoPacket(
+                PlayerInfoPacket.Action.REMOVE_PLAYER,
+                new PlayerInfoPacket.RemovePlayer(uuid)
+        );
     }
 
     @Override

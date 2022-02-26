@@ -86,7 +86,7 @@ public class DevEvents {
             Inventory inventory = player.getOpenInventory();
 
             if (inventory instanceof TradeInventory tradeInventory) {
-                tradeInventory.handleSlotSelect(player, tradePacket.selectedSlot);
+                tradeInventory.handleSlotSelect(player, tradePacket.selectedSlot());
             }
         }
     }

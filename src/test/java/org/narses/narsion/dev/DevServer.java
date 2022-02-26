@@ -139,11 +139,6 @@ public class DevServer extends NarsionServer {
         }
 
         @Override
-        public void fillBiomes(@NotNull final Biome[] biomes, final int chunkX, final int chunkZ) {
-            Arrays.fill(biomes, Biome.PLAINS);
-        }
-
-        @Override
         public @Nullable List<ChunkPopulator> getPopulators() {
             return null;
         }
