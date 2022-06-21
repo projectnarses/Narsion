@@ -1,6 +1,7 @@
 package org.narses.narsion.item;
 
-import net.minestom.server.item.ItemStackBuilder;
+import net.minestom.server.item.ItemMeta;
+import net.minestom.server.item.ItemStack;
 import org.itemize.ItemStackProvider;
 import org.itemize.data.ItemData;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public final class NarsionItemStackProvider extends ItemStackProvider {
 
     @Override
     // TODO: Figure out if there is a way we can make origins work with clientside predictions
-    protected void prepare(ItemStackBuilder builder, ItemData itemData, UUID ignored) {
+    protected void prepare(ItemMeta.Builder builder, ItemData itemData, UUID ignored) {
         super.prepare(builder, itemData, null);
         narsionItemDataProvider.prepare(itemData, builder);
     }

@@ -10,7 +10,6 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockManager;
-import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.narses.narsion.NarsionServer;

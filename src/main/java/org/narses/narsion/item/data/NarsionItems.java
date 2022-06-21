@@ -4,8 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.item.ItemMetaBuilder;
-import net.minestom.server.item.ItemStackBuilder;
+import net.minestom.server.item.ItemMeta;
+import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.itemize.data.ItemData;
 import org.itemize.data.ItemRarity;
@@ -47,8 +47,8 @@ public class NarsionItems extends NarsionItemDataProvider {
     }
 
     @Override
-    public void prepare(@NotNull ItemData data, @NotNull ItemStackBuilder builder) {
-        builder.meta(ItemsEnum.valueOf(data.ID()));
+    public void prepare(@NotNull ItemData data, @NotNull ItemMeta.Builder builder) {
+        ItemsEnum.valueOf(data.ID()).apply(builder);
     }
 
     // An item rarity only used during development

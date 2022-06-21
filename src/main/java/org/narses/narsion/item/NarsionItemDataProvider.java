@@ -1,6 +1,7 @@
 package org.narses.narsion.item;
 
-import net.minestom.server.item.ItemStackBuilder;
+import net.minestom.server.item.ItemMeta;
+import net.minestom.server.item.ItemStack;
 import org.itemize.data.ItemData;
 import org.itemize.data.ItemDataProvider;
 import org.jetbrains.annotations.NotNull;
@@ -26,5 +27,5 @@ public abstract class NarsionItemDataProvider implements ItemDataProvider {
         return itemDataMap.get(ID);
     }
 
-    public abstract void prepare(@NotNull ItemData data, @NotNull ItemStackBuilder builder);
+    public abstract void prepare(@NotNull ItemData data, @NotNull ItemMeta.Builder builder);
 }
