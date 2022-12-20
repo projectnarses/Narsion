@@ -1,6 +1,7 @@
 package org.narses.narsion.inventory;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,7 +15,7 @@ import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.inventory.TransactionOption;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.ItemStackBuilder;
+import net.minestom.server.item.ItemStack.Builder;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.BundleMeta;
 import net.minestom.server.network.packet.server.play.TradeListPacket;
@@ -24,10 +25,7 @@ import org.narses.narsion.events.PlayerTradeInventoryTradeEvent;
 import org.narses.narsion.item.ClickableInventory;
 import org.narses.narsion.util.InventoryUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 public class TradeInventory extends Inventory implements ClickableInventory {
@@ -84,7 +82,7 @@ public class TradeInventory extends Inventory implements ClickableInventory {
 
         // Else create bundle
 
-        ItemStackBuilder builder = ItemStack.builder(Material.BUNDLE);
+        ItemStack.Builder builder = ItemStack.builder(Material.BUNDLE);
 
         final List<Component> lore = new ArrayList<>();
         lore.add(Component.text("Items: ").color(NamedTextColor.AQUA));
@@ -215,6 +213,12 @@ public class TradeInventory extends Inventory implements ClickableInventory {
             @NotNull Object2IntMap<String> ingredients,
             @NotNull Object2IntMap<String> result
     ) implements Function<NarsionServer, TradeListPacket.Trade> {
+
+        public Trade(Map<String, Integer> ingredients, Map<String, Integer> result) {
+            this(new Object2IntOpenHashMap<>(ingredients),
+                    new Object2IntOpenHashMap<>(result));
+        }
+
         @Override
         public TradeListPacket.Trade apply(@NotNull NarsionServer server) {
             ItemStack input = generateBundle(server, ingredients);

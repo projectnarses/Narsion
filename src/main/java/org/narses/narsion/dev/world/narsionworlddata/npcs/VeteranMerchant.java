@@ -16,22 +16,22 @@ class VeteranMerchant extends MerchantNpc {
 
     private final TradeInventory.Trade[] trades = {
             new TradeInventory.Trade(
-                    new Object2IntOpenHashMap<>(Map.of(
+                    Map.of(
                             NarsionItems.ADVENTURING, 3,
                             NarsionItems.GOLD, 3
-                    )),
-                    new Object2IntOpenHashMap<>(Map.of(
+                    ),
+                    Map.of(
                             NarsionItems.TRAINING, 1
-                    ))
+                    )
             ),
             new TradeInventory.Trade(
-                    new Object2IntOpenHashMap<>(Map.of(
+                    Map.of(
                             NarsionItems.STEEL, 3,
                             NarsionItems.COPPER, 3
-                    )),
-                    new Object2IntOpenHashMap<>(Map.of(
+                    ),
+                    Map.of(
                             NarsionItems.GOLD, 1
-                    ))
+                    )
             )
     };
 

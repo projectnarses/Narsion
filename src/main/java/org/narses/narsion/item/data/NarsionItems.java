@@ -47,7 +47,7 @@ public class NarsionItems extends NarsionItemDataProvider {
     }
 
     @Override
-    public void prepare(@NotNull ItemData data, @NotNull ItemMeta.Builder builder) {
+    public void prepare(@NotNull ItemData data, @NotNull ItemStack.Builder builder) {
         ItemsEnum.valueOf(data.ID()).apply(builder);
     }
 
@@ -73,7 +73,7 @@ public class NarsionItems extends NarsionItemDataProvider {
     public static final String NETHERITE = "NETHERITE";
     public static final String STEEL = "STEEL";
 
-    private enum ItemsEnum implements Supplier<ItemData>, UnaryOperator<ItemMetaBuilder> {
+    private enum ItemsEnum implements Supplier<ItemData>, UnaryOperator<ItemStack.Builder> {
         ADVENTURING(
                 Material.STONE_SWORD,
                 Component.text("Adventuring"),
@@ -418,7 +418,7 @@ public class NarsionItems extends NarsionItemDataProvider {
         }
 
         @Override
-        public ItemMetaBuilder apply(ItemMetaBuilder builder) {
+        public ItemStack.Builder apply(ItemStack.Builder builder) {
             itemTypeData.apply(builder);
             return builder;
         }

@@ -1,6 +1,7 @@
 package org.itemize.data;
 
 import net.minestom.server.item.ItemMeta;
+import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 
@@ -18,12 +19,12 @@ public record ItemData(
 	public static final Tag<String> TAG_ID = Tag.String("ItemID");
 
 	/**
-	 * Applies this ItemData to the ItemMetaBuilder
+	 * Applies this ItemData to the ItemStack.Builder
 	 * @param builder
 	 */
-	public void apply(ItemMeta.Builder builder) {
+	public void apply(ItemStack.Builder builder) {
 		builder.displayName(displayName);
-		builder.customModelData(cmd);
+		builder.meta(meta -> meta.customModelData(cmd));
 		builder.lore(lore);
 
 		// Tags

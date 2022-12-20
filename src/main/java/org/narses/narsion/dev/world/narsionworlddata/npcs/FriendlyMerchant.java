@@ -16,22 +16,22 @@ class FriendlyMerchant extends MerchantNpc {
 
     private final TradeInventory.Trade[] trades = {
             new TradeInventory.Trade(
-                    new Object2IntOpenHashMap<>(Map.of(
+                    Map.of(
                             NarsionItems.COW_LEATHER, 1,
                             NarsionItems.IRON, 2
-                    )),
-                    new Object2IntOpenHashMap<>(Map.of(
+                    ),
+                    Map.of(
                             NarsionItems.BEGINNING, 1
-                    ))
+                    )
             ),
             new TradeInventory.Trade(
-                    new Object2IntOpenHashMap<>(Map.of(
+                    Map.of(
                             NarsionItems.IRON, 1,
                             NarsionItems.COAL, 1
-                    )),
-                    new Object2IntOpenHashMap<>(Map.of(
+                    ),
+                    Map.of(
                             NarsionItems.COPPER, 1
-                    ))
+                    )
             )
     };
 

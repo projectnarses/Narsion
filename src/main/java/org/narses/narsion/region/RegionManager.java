@@ -62,11 +62,11 @@ public record RegionManager(
             return;
         }
 
-        for (Pos[] face : polygon.getFaces()) {
-            for (Pair<Pos, Pos> pair : ArrayUtil.makePairs(face)) {
-                Pos first = pair.getFirst();
+        for (Point[] face : polygon.getFaces()) {
+            for (Pair<Point, Point> pair : ArrayUtil.makePairs(face)) {
+                Point first = pair.getFirst();
 
-                Pos second = pair.getSecond();
+                Point second = pair.getSecond();
 
                 Vec direction = new Vec(second.x() - first.x(), second.y() - first.y(), second.z() - first.z());
 

@@ -1,7 +1,8 @@
 package org.narses.narsion.item.data.type;
 
 import net.kyori.adventure.text.Component;
-import net.minestom.server.item.ItemMetaBuilder;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.ItemStack.Builder;
 import net.minestom.server.tag.Tag;
 import org.itemize.data.ItemType;
 import org.jglrxavpok.hephaistos.nbt.NBTCompound;
@@ -34,7 +35,7 @@ public interface ItemTypeData {
         private static final ItemType ITEM_TYPE = new ItemType(Component.text("Component"), new NBTCompound());
 
         @Override
-        public void apply(ItemMetaBuilder builder) {
+        public void apply(ItemStack.Builder builder) {
             // Global
             builder.set(TAG_TIER, tier);
             builder.set(TAG_RECIPES, recipes);
@@ -71,7 +72,7 @@ public interface ItemTypeData {
         private static final ItemType ITEM_TYPE = new ItemType(Component.text("Weapon"), new NBTCompound());
 
         @Override
-        public void apply(ItemMetaBuilder builder) {
+        public void apply(ItemStack.Builder builder) {
             // Global
             builder.set(TAG_TIER, tier);
             builder.set(TAG_RECIPES, recipes);
@@ -91,7 +92,7 @@ public interface ItemTypeData {
         }
     }
 
-    void apply(ItemMetaBuilder builder);
+    void apply(ItemStack.Builder builder);
 
     ItemType getType();
 }

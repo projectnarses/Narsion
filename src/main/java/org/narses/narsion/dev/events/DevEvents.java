@@ -3,6 +3,7 @@ package org.narses.narsion.dev.events;
 import com.moandjiezana.toml.Toml;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
@@ -61,6 +62,7 @@ public class DevEvents {
 
         event.setSpawningInstance(server.getPrimaryInstance());
         player.setRespawnPoint(respawnPoint);
+        player.setGameMode(GameMode.ADVENTURE);
         player.setPermissionLevel(4);
     }
 
@@ -139,7 +141,7 @@ public class DevEvents {
         // Update ability slot
         DevPlayer devPlayer = server.wrap(player);
         final String selectionMode = devPlayer.getTag(NarsionPlayer.TAG_ABILITY_SELECTION_MODE);
-        Objects.requireNonNull(selectionMode);
+        Objects.requireNonNull(selectionMode, "Ability selection mode is null");
 
         switch (selectionMode) {
             case "SCROLL" -> {

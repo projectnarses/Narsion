@@ -2,6 +2,7 @@ package org.narses.narsion.dev;
 
 import com.moandjiezana.toml.Toml;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.ServerProcess;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.ChunkGenerator;
@@ -35,7 +36,9 @@ import java.util.List;
 public class DevServer extends NarsionServer {
     // Entrypoint for dev server
     public static void main(final String[] args) {
-        new DevServer(MinecraftServer.init());
+        var mcServer = MinecraftServer.init();
+        DevServer server = new DevServer(MinecraftServer.process());
+        server.start(mcServer);
     }
 
     private static final File PLAYER_CLASSES_CONFIG = new File("PlayerClasses.toml");
@@ -45,12 +48,11 @@ public class DevServer extends NarsionServer {
 
     /**
      * Initializes a dev server
-     * @param server the server being initialized
+     * @param process the server process being initialized
      */
-    private DevServer(final MinecraftServer server) {
+    private DevServer(final ServerProcess process) {
         super(
-                server,
-                MinecraftServer.getGlobalEventHandler(),
+                process,
                 DevPlayer::new,
                 new PlayerClasses(new Toml().read(PLAYER_CLASSES_CONFIG)),
                 OriginProvider::new
@@ -64,7 +66,7 @@ public class DevServer extends NarsionServer {
 //        }
 
         // Start dev instance
-        this.primaryInstance = MinecraftServer.getInstanceManager().createInstanceContainer();
+        this.primaryInstance = process.instance().createInstanceContainer();
         primaryInstance.setChunkGenerator(new DevelopmentChunkGenerator());
         // instanceContainer.setChunkLoader(new AnvilLoader("world"));
 
@@ -82,7 +84,7 @@ public class DevServer extends NarsionServer {
         }
 
         // Register Events
-        new DevEvents(this).registerAll(MinecraftServer.getGlobalEventHandler());
+        new DevEvents(this).registerAll(process.eventHandler());
 
         // Register commands
         {
@@ -102,8 +104,6 @@ public class DevServer extends NarsionServer {
                 manager.registerHandler(staticBlock.getNamespace(), staticBlock::create);
             }
         }
-
-        server.start(config.getString("Server.IP"), config.getLong("Server.Port").intValue());
     }
 
     /**

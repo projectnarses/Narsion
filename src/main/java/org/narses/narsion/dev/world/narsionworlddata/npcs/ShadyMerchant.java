@@ -16,22 +16,22 @@ class ShadyMerchant extends MerchantNpc {
 
     private final TradeInventory.Trade[] trades = {
             new TradeInventory.Trade(
-                    new Object2IntOpenHashMap<>(Map.of(
+                    Map.of(
                             NarsionItems.BEGINNING, 3,
                             NarsionItems.STEEL, 3
-                    )),
-                            new Object2IntOpenHashMap<>(Map.of(
+                    ),
+                    Map.of(
                             NarsionItems.ADVENTURING, 1
-                    ))
+                    )
             ),
             new TradeInventory.Trade(
-                    new Object2IntOpenHashMap<>(Map.of(
+                    Map.of(
                             NarsionItems.COAL, 3,
                             NarsionItems.IRON, 3
-                    )),
-                    new Object2IntOpenHashMap<>(Map.of(
+                    ),
+                    Map.of(
                             NarsionItems.STEEL, 1
-                    ))
+                    )
             )
     };
 

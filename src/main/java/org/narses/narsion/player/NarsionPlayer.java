@@ -41,7 +41,7 @@ public class NarsionPlayer implements TagReadable, TagWritable, SocialMember {
         this.nbtData = new MutableNBTCompound();
 
         // TODO: Read player data from database
-        this.setTag(TAG_ABILITY_SELECTION_MODE, "SCROLL");
+//        this.setTag(TAG_ABILITY_SELECTION_MODE, "SCROLL");
     }
 
     public void setPlayerClass(@NotNull PlayerClass playerClass) {
@@ -75,8 +75,8 @@ public class NarsionPlayer implements TagReadable, TagWritable, SocialMember {
             return Quest.Status.ACTIVE;
         }
 
-        return Quest.Status.UNCOMPLETED;
-    };
+        return Quest.Status.NOT_STARTED;
+    }
 
     public @NotNull Set<Quest> getCompletedQuests() {
         return completedQuests;
@@ -87,8 +87,8 @@ public class NarsionPlayer implements TagReadable, TagWritable, SocialMember {
     };
 
     // Data tags
-    public static final Tag<String> TAG_ABILITY_SELECTION_MODE = Tag.String("narsion:ability_selection_mode");
-    public static final Tag<Boolean> TAG_VISITED_ELSINORE = TagUtils.Boolean("narsion:visited_elsinore");
+    public static final Tag<String> TAG_ABILITY_SELECTION_MODE = Tag.String("narsion:ability_selection_mode").defaultValue("SCROLL");
+    public static final Tag<@NotNull Boolean> TAG_VISITED_ELSINORE = TagUtils.Boolean("narsion:visited_elsinore").defaultValue(false);
 
     @Override
     public @Nullable SocialRank getRank() {

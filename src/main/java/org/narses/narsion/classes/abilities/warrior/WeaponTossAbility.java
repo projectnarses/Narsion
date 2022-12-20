@@ -7,7 +7,6 @@ import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
-import org.narses.entities.collision.OffsetBoundingBox;
 import org.narses.entities.thrownitementity.ThrownItemEntity;
 import org.narses.narsion.NarsionServer;
 
@@ -37,7 +36,7 @@ public class WeaponTossAbility {
 
 			entity.teleport(entity.getPosition().add(0f, 1.8f, 0f));
 
-			entity.setBoundingBox(new OffsetBoundingBox(entity, 0.1f, 0.1f, 0.1f, 0.0f, 0.0f, 0.0f));
+//			entity.setBoundingBox(new OffsetBoundingBox(entity, 0.1f, 0.1f, 0.1f, 0.0f, 0.0f, 0.0f));
 
 			entity.scheduleRemove(15, TimeUnit.SECOND);
 		});

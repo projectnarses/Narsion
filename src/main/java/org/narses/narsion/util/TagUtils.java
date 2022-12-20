@@ -1,5 +1,6 @@
 package org.narses.narsion.util;
 
+import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.tag.TagReadable;
 import net.minestom.server.tag.TagSerializer;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -35,7 +37,7 @@ public class TagUtils {
 
     public static <T extends Serializable> Tag<T> Serializable(String key) {
         TagSerializer<T> serializer = new StandardGenerator<>(
-                Tag.ByteArray(key),
+                Tag.Byte(key).list(),
                 TagUtils::convertToObject,
                 TagUtils::convertToBytes
         );
@@ -45,7 +47,7 @@ public class TagUtils {
 
     // Byte conversion
     // TODO: Move this to a math util
-    public static <T extends Serializable> byte[] convertToBytes(T obj) {
+    public static <T extends Serializable> List<Byte> convertToBytes(T obj) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = null;
         try {
@@ -56,10 +58,10 @@ public class TagUtils {
         }
 
         byte[] bytes = bos.toByteArray();
-        return bytes;
+        return new ByteArrayList(bytes);
     }
-    public static <T extends Serializable> T convertToObject(byte[] byteArray) {
-        ByteArrayInputStream bos = new ByteArrayInputStream(byteArray);
+    public static <T extends Serializable> T convertToObject(List<Byte> byteArray) {
+        ByteArrayInputStream bos = new ByteArrayInputStream(new ByteArrayList(byteArray).toByteArray());
         ObjectInputStream ois = null;
         try {
             ois = new ObjectInputStream(bos);

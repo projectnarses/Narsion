@@ -50,9 +50,10 @@ public enum Elsinore implements StaticRegion {
 	public void onPlayerEnter(@NotNull NarsionServer server, @NotNull Player player) {
 		player.sendMessage("You have entered Elsinore, a small market town which marks the beginning of your journey.");
 		DevPlayer devPlayer = server.wrap(player);
-		Boolean visitedElsinore = devPlayer.getTag(NarsionPlayer.TAG_VISITED_ELSINORE);
+		//noinspection ConstantConditions
+		boolean visitedElsinore = devPlayer.getTag(NarsionPlayer.TAG_VISITED_ELSINORE);
 
-		if (visitedElsinore != null && visitedElsinore) {
+		if (visitedElsinore) {
 			return;
 		}
 

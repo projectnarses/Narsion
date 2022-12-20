@@ -19,7 +19,7 @@ public final class NarsionItemStackProvider extends ItemStackProvider {
 
     @Override
     // TODO: Figure out if there is a way we can make origins work with clientside predictions
-    protected void prepare(ItemMeta.Builder builder, ItemData itemData, UUID ignored) {
+    protected void prepare(ItemStack.Builder builder, ItemData itemData, UUID ignored) {
         super.prepare(builder, itemData, null);
         narsionItemDataProvider.prepare(itemData, builder);
     }

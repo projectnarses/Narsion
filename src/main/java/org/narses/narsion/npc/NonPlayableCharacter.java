@@ -61,7 +61,7 @@ public class NonPlayableCharacter extends LivingEntity implements NavigableEntit
     };
 
     /**
-     * This is run when a player interacts with this npc
+     * This is run whenever a player interacts with this npc
      */
     public void onInteract(@NotNull NarsionServer server, PlayerEntityInteractEvent event) {
     }
@@ -92,7 +92,7 @@ public class NonPlayableCharacter extends LivingEntity implements NavigableEntit
 
         return new PlayerInfoPacket(
                 PlayerInfoPacket.Action.ADD_PLAYER,
-                List.of(new PlayerInfoPacket.AddPlayer(uuid, name, List.of(), GameMode.CREATIVE, 0, displayName))
+                List.of(new PlayerInfoPacket.AddPlayer(uuid, name, List.of(), GameMode.CREATIVE, 0, displayName, null))
         );
     }
 
@@ -113,8 +113,8 @@ public class NonPlayableCharacter extends LivingEntity implements NavigableEntit
         super.updateNewViewer(player);
     }
 
-    public static interface NPCSupplier {
-        public @NotNull NonPlayableCharacter create(
+    public interface NPCSupplier {
+        @NotNull NonPlayableCharacter create(
                 @NotNull UUID uuid,
                 @NotNull String id,
                 @NotNull Pos homePosition,

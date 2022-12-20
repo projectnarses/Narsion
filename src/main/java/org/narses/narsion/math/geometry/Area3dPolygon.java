@@ -4,7 +4,7 @@ import dev.emortal.rayfast.area.Intersection;
 import dev.emortal.rayfast.area.area3d.Area3d;
 import kotlin.NotImplementedError;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Point;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +19,9 @@ public class Area3dPolygon implements Area3d {
     private double[][] facePlanes;
 
     // Polygon faces
-    private Pos[][] faces;
+    private Point[][] faces;
 
-    private Area3dPolygon(final Pos[] polygonInst) {
+    private Area3dPolygon(final Point[] polygonInst) {
 
         // Set boundary
 		this.set3DPolygonBoundary(polygonInst);
@@ -30,19 +30,19 @@ public class Area3dPolygon implements Area3d {
 		this.setConvex3DFaces(polygonInst);
     }
 
-    public static Area3dPolygon of(final Pos... points) {
+    public static Area3dPolygon of(final Point... points) {
         return new Area3dPolygon(points);
     }
 
-    public static Area3dPolygon of(final Collection<Pos> list) {
-        return Area3dPolygon.of(list.toArray(Pos[]::new));
+    public static Area3dPolygon of(final Collection<? extends Point> list) {
+        return Area3dPolygon.of(list.toArray(Point[]::new));
     }
 
     public double[][] getFacePlanes() {
         return this.facePlanes;
     }
 
-    public Pos[][] getFaces() {
+    public Point[][] getFaces() {
         return this.faces;
     }
 
@@ -67,13 +67,13 @@ public class Area3dPolygon implements Area3d {
 			}
 		}
 
-        // If the point is in the opposite half space with normal vector for all 6
+        // If the point is in the opPointite half space with normal vector for all 6
         // faces,
         // then it is inside the 3D polygon
         return true;
     }
 
-    private void set3DPolygonBoundary(final Pos[] polygon) {
+    private void set3DPolygonBoundary(final Point[] polygon) {
 
         final int n = polygon.length;
 
@@ -105,8 +105,8 @@ public class Area3dPolygon implements Area3d {
         }
     }
 
-    private void setConvex3DFaces(final Pos[] polygon) {
-        final ArrayList<Pos[]> faces = new ArrayList<>();
+    private void setConvex3DFaces(final Point[] polygon) {
+        final ArrayList<Point[]> faces = new ArrayList<>();
 
         final ArrayList<double[]> facePlanes = new ArrayList<>();
 
@@ -121,25 +121,25 @@ public class Area3dPolygon implements Area3d {
 
         // vertex indexes for all faces
         // vertices index is the original index value in the input polygon
-        final ArrayList<ArrayList<Integer>> faceVerticeIndex = new ArrayList<>();
+        final List<List<Integer>> faceVerticeIndex = new ArrayList<>();
 
         // face planes for all faces
-        final ArrayList<double[]> fpOutward = new ArrayList<>();
+        final List<double[]> fpOutward = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
             // triangle point 1
-            final Pos p0 = polygon[i];
+            final Point p0 = polygon[i];
 
             for (int j = i + 1; j < n; j++) {
                 // triangle point 2
-                final Pos p1 = polygon[j];
+                final Point p1 = polygon[j];
 
                 for (int k = j + 1; k < n; k++) {
                     // triangle point 3
-                    final Pos p2 = polygon[k];
+                    final Point p2 = polygon[k];
 
                     // Plane Equation: a * x + b * y + c * z + d = 0
-                    // Convert triple position to plane equation
+                    // Convert triple Pointition to plane equation
                     final Point v = p0.sub(p1);
 
                     final Point u = p0.sub(p2);
@@ -148,7 +148,7 @@ public class Area3dPolygon implements Area3d {
                     final double y = (u.z() * v.x()) - (u.x() * v.z());
                     final double z = (u.x() * v.y()) - (u.y() * v.x());
 
-                    final Pos p11 = p0.add(x, y, z);
+                    final Point p11 = p0.add(x, y, z);
 
                     final Point n1 = p0.sub(p11);
 
@@ -167,7 +167,7 @@ public class Area3dPolygon implements Area3d {
                     for (int l = 0; l < n; l++) {
                         // any point other than the 3 triangle points
                         if ((l != i) && (l != j) && (l != k)) {
-                            final Pos p = polygon[l];
+                            final Point p = polygon[l];
 
                             final double dis = (p.x() * a) + (p.y() * b) + (p.z() * c) + d;
 
@@ -214,7 +214,7 @@ public class Area3dPolygon implements Area3d {
                             }
                         }
                     } else {
-                        // possible reasons:
+                        // Pointsible reasons:
                         // 1. the plane is not a face of a convex 3d polygon,
                         // it is a plane crossing the convex 3d polygon.
                         // 2. the plane is a face of a concave 3d polygon
@@ -234,7 +234,7 @@ public class Area3dPolygon implements Area3d {
             final List<Integer> vi = new ArrayList<>();
 
             final int count = faceVerticeIndex.get(i).size();
-            final Pos[] gp = new Pos[count];
+            final Point[] gp = new Point[count];
 
             final List<Integer> face = faceVerticeIndex.get(i);
 
@@ -247,7 +247,7 @@ public class Area3dPolygon implements Area3d {
             faces.add(gp);
         }
 
-        this.faces = faces.toArray(Pos[][]::new);
+        this.faces = faces.toArray(Point[][]::new);
         this.facePlanes = facePlanes.toArray(double[][]::new);
     }
 
@@ -257,7 +257,8 @@ public class Area3dPolygon implements Area3d {
     }
 
     @Override
-    public <R> @Nullable R lineIntersection(double posX, double posY, double posZ, double dirX, double dirY, double dirZ, @NotNull Intersection<R> intersection) {
+    public <R> @Nullable R lineIntersection(double PointX, double PointY, double PointZ, double dirX, double dirY,
+                                            double dirZ, @NotNull Intersection<R> intersection) {
         throw new NotImplementedError("Area3d#lineIntersection has not been implemented on Area3dPolygon");
     }
 }

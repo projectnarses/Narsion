@@ -2,6 +2,7 @@ package org.narses.narsion;
 
 import com.moandjiezana.toml.Toml;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.ServerProcess;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventListener;
@@ -48,8 +49,7 @@ public abstract class NarsionServer {
     protected final @NotNull EventNode<Event> eventNode;
 
     public NarsionServer(
-            @NotNull MinecraftServer minecraftServer,
-            @NotNull EventNode<Event> eventNode,
+            @NotNull ServerProcess process,
             @NotNull BiFunction<NarsionServer, Player, ? extends NarsionPlayer> playerWrapperFunction,
             @NotNull PlayerClasses playerClasses,
             @NotNull Function<NarsionServer, OriginProvider> originProviderFunction
@@ -57,7 +57,7 @@ public abstract class NarsionServer {
         // First and foremost, read config.
         this.config = new Toml().read(configFile);
 
-        this.eventNode = eventNode;
+        this.eventNode = process.eventHandler();
 
         // Item data + provider
         final NarsionItemDataProvider narsionItemDataProvider = new NarsionItems();
@@ -85,15 +85,6 @@ public abstract class NarsionServer {
 
         // Initialize socials
         this.socialsManager = new SocialsManager(this);
-
-        {
-            // Remove player from player map on leave
-            EventListener<PlayerDisconnectEvent> listener = EventListener.builder(PlayerDisconnectEvent.class)
-                    .ignoreCancelled(true)
-                    .handler(event -> playerNarsionPlayerMap.remove(event.getPlayer()))
-                    .build();
-            MinecraftServer.getGlobalEventHandler().addListener(listener);
-        }
     }
 
     public @NotNull Toml getConfig() {
@@ -141,5 +132,9 @@ public abstract class NarsionServer {
 
     public @NotNull EventNode<Event> getEventNode() {
         return eventNode;
+    }
+
+    public void start(MinecraftServer server) {
+        server.start(config.getString("Server.IP"), config.getLong("Server.Port").intValue());
     }
 }

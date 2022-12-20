@@ -32,8 +32,8 @@ public enum NarsionNPCs {
             VeteranMerchant::new,
             Component.text("Veteran Merchant"),
             new Pos(2930.56, 69.00, -46.53, -496.53F, 1.03F),
-            Component.text("Grgghmpg Kids these days.. hmghmr I remember steak pvp. The golden ages."),
-            Component.text("What? A shield? Hit cooldown? You can't even jitter click can you chump.")
+            Component.text("Ah yes, I remember steak pvp. The golden ages."),
+            Component.text("What? A shield? Hit cooldown? Whatever happened to good old fashioned jitter clicking?")
     ),
     ;
 

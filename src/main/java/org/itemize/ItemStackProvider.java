@@ -27,7 +27,7 @@ public class ItemStackProvider {
 	public @NotNull ItemStack create(
 			@NotNull Supplier<ItemData> itemDataSupplier,
 			@NotNull UUID origin,
-			@Nullable Consumer<ItemMeta.Builder> metaBuilderConsumer
+			@Nullable Consumer<ItemStack.Builder> metaBuilderConsumer
 	) {
 		return create(itemDataSupplier.get(), origin, metaBuilderConsumer);
 	}
@@ -35,7 +35,7 @@ public class ItemStackProvider {
 	public @NotNull ItemStack create(
 			@NotNull String ID,
 			@NotNull UUID origin,
-			@Nullable Consumer<ItemMeta.Builder> metaBuilderConsumer
+			@Nullable Consumer<ItemStack.Builder> metaBuilderConsumer
 	) {
 		ItemData itemData = itemDataProvider.get(ID);
 
@@ -49,21 +49,18 @@ public class ItemStackProvider {
 	public @NotNull ItemStack create(
 			@NotNull ItemData itemData,
 			@NotNull UUID origin,
-			@Nullable Consumer<ItemMeta.Builder> metaBuilderConsumer
+			@Nullable Consumer<ItemStack.Builder> metaBuilderConsumer
 	) {
 		// Setup item stack builder
 		ItemStack.Builder builder = ItemStack.builder(itemData.display());
-		builder.meta(metaBuilder -> {
-			// Prepare item
-			prepare(metaBuilder, itemData, origin);
-			if (metaBuilderConsumer != null)
-				metaBuilderConsumer.accept(metaBuilder);
-		});
+		prepare(builder, itemData, origin);
+		if (metaBuilderConsumer != null)
+			metaBuilderConsumer.accept(builder);
 
 		return builder.build();
 	}
 
-	protected void prepare(ItemMeta.Builder builder, ItemData itemData, UUID origin) {
+	protected void prepare(ItemStack.Builder builder, ItemData itemData, UUID origin) {
 		// Display
 		builder.displayName(itemData.displayName());
 		builder.lore(itemData.lore());

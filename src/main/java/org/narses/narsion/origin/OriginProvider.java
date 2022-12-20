@@ -6,6 +6,10 @@ import org.narses.narsion.NarsionServer;
 import java.util.UUID;
 
 // TODO: Async uploading origin to database
+
+/**
+ * Origins are records of tracked data. e.g. the origin of an item, or skillpoint.
+ */
 public class OriginProvider {
 
     private final @NotNull NarsionServer server;
